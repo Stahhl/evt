@@ -23,7 +23,7 @@ pnpm check        # lint + typecheck + tests
 | `packages/bots` | AI opponents. |
 | `packages/cli` | Headless play and replay tools: `pnpm evt <command>`. |
 | `packages/server` | Cloudflare Worker + one Durable Object per match: `pnpm dev:server`. |
-| `packages/web` | Vite + React web client: `pnpm dev:web` (proxies `/api` to the server). |
+| `packages/web` | Vite + React + Three.js web client: `pnpm dev:web`, then open the printed URL to play against a bot. |
 
 Packages are consumed as TypeScript source; there is no build step except for the web bundle.
 The CLI runs on Node's built-in TypeScript support.

@@ -64,7 +64,7 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Klart när:** `evt play --p1 bot:random --p2 bot:random` spelar ett parti till slut, och dess replay ger samma hash när det körs om.
 
-### 4. Gående skelett i webben (M)
+### 4. Gående skelett i webben (M) – klart
 
 **Mål:** något klickbart så tidigt som möjligt, med samma motor.
 

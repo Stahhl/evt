@@ -159,6 +159,20 @@ a  .  .  B
 
 Alla inbyggda kartor testas för att vara punktsymmetriska, både terräng och enheter.
 
+## Gränssnitt
+
+Hur en tur spelas i webbklienten. Det är också preliminärt.
+
+- Den aktiva enheten är alltid vald, eftersom bara den kan agera (B1). Att klicka på en annan enhet visar bara dess värden.
+- Blå rutor visar vart enheten kan gå. Håller man muspekaren över en sådan ruta visas vägen dit. **Ett klick flyttar direkt**, utan bekräftelse.
+- Röda rutor visar fiender som kan anfallas. **Ett anfall kräver bekräftelse**: klicket öppnar en förhandsvisning (hp före och efter, och vem som dör), och först "Confirm" utför anfallet. Esc avbryter.
+- `E` eller knappen "End turn" avslutar turen.
+- Motståndarens drag spelas upp som animationer i tur och ordning, med en kort paus före varje botdrag.
+
+**Varför:** en förflyttning går inte att ångra, men konsekvensen syns redan i markeringen och vägen. Ett anfall är svårare att förutse, så det får en förhandsvisning. Färre klick för det vanligaste draget.
+
+**Att se över:** ångra förflyttning innan handlingen är gjord, och kamerarotation för rutor som skyms (steg 7).
+
 ## Öppna frågor
 
 | Fråga | Påverkar | När |

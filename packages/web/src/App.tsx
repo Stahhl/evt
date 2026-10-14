@@ -1,10 +1,9 @@
-import { RULES_VERSION } from "@evt/engine";
+import { useState } from "react";
+import { Game } from "./Game.tsx";
+
+const newSeed = () => Math.floor(Math.random() * 2 ** 31);
 
 export function App() {
-  return (
-    <main>
-      <h1>Elemental Voxel Tactics</h1>
-      <p>Rules {RULES_VERSION}</p>
-    </main>
-  );
+  const [seed, setSeed] = useState(newSeed);
+  return <Game key={seed} seed={seed} onRestart={() => setSeed(newSeed())} />;
 }
