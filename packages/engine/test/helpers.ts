@@ -7,9 +7,13 @@ import {
   type UnitSetup,
 } from "../src/index.ts";
 
-export function scenario(text: string, stats: Record<string, Partial<UnitSetup>> = {}): MatchState {
+export function scenario(
+  text: string,
+  stats: Record<string, Partial<UnitSetup>> = {},
+  seed = 1,
+): MatchState {
   const { map, units } = parseScenario(text);
-  return createMatch({ map, units: units.map((u) => ({ ...u, ...stats[u.id] })), seed: 1 });
+  return createMatch({ map, units: units.map((u) => ({ ...u, ...stats[u.id] })), seed });
 }
 
 /** Strict-mode code throws if apply tries to modify a frozen state. */

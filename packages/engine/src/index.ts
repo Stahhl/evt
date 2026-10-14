@@ -1,12 +1,24 @@
+export {
+  ABILITIES,
+  type AbilityDef,
+  CONDUCTION_DAMAGE,
+  ELECTRIFIED_DAMAGE,
+  REACTIONS,
+  STEAM_DODGE_PERCENT,
+  SURFACE_ROUNDS,
+} from "./abilities.ts";
 export { parseScenario } from "./ascii.ts";
+export { dodgeChance } from "./effects.ts";
 export { canonicalize, hashState } from "./hash.ts";
-export { inBounds, isStandable, tileAt } from "./map.ts";
+export { area, distance, hasWall, inBounds, isStandable, tileAt } from "./map.ts";
 export { MAPS } from "./maps.ts";
 export {
+  abilityTargets,
   activeUnit,
   apply,
   attackDamage,
   attackTargets,
+  type Branch,
   checkAction,
   createMatch,
   DEFAULT_MAX_ROUNDS,
@@ -18,6 +30,7 @@ export {
   type MatchSetup,
   type Outcome,
   preview,
+  readyAbilities,
   type UnitSetup,
   unitAt,
 } from "./match.ts";
@@ -32,11 +45,16 @@ export {
 } from "./rng.ts";
 export { hasLineOfSight, PILLAR_HEIGHT } from "./sight.ts";
 export type {
+  AbilityId,
   Action,
+  Element,
   GameEvent,
   GameMap,
   MatchState,
   Pos,
+  Status,
+  Surface,
+  SurfaceKind,
   Team,
   Terrain,
   Tile,

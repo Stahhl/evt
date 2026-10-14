@@ -1,4 +1,4 @@
-import { tileAt } from "./map.ts";
+import { isStandable, tileAt } from "./map.ts";
 import type { MatchState, Pos, Terrain, Unit } from "./types.ts";
 
 /** Fixed neighbour order (north, east, south, west) keeps paths deterministic. */
@@ -46,7 +46,7 @@ export function reachableTiles(state: MatchState, unit: Unit): { to: Pos; path: 
         const to = { x: from.x + step.x, y: from.y + step.y };
         const tile = tileAt(map, to);
         const stepCost = tile ? MOVE_COST[tile.terrain] : null;
-        if (!tile || stepCost === null || tile.object !== null) continue;
+        if (!tile || stepCost === null || !isStandable(tile)) continue;
         if (Math.abs(tile.height - fromTile.height) > unit.jump) continue;
         const toIndex = to.y * map.cols + to.x;
         const other = occupant.get(toIndex);

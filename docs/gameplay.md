@@ -119,6 +119,76 @@ Ett parti har en rundgräns, i dag 30 rundor. Är partiet inte avgjort när sist
 
 **Att se över:** 30 är en gissning. Med tre enheter per lag och fyra träffar för att döda bör ett aktivt parti vara avgjort långt tidigare. Ett alternativ till oavgjort är att den som har mest kvarvarande hp vinner.
 
+### B9. Förmågor
+
+Varje enhet kan ha förmågor. En förmåga räknas som turens handling, precis som ett grundanfall, och har en **nedkylning** räknad i egna turer: med nedkylning 2 kan den användas varannan tur. Nedkylningen räknas ned i början av enhetens tur, även när enheten står över turen.
+
+| Förmåga | Element | Räckvidd | Mål | Träffar | Skada | Nedkylning |
+|---|---|---|---|---|---|---|
+| Eldklot | eld | 4 | valfri ruta | målrutan och dess fyra grannar | 20 | 2 |
+| Isvägg | is | 4 | tom ruta där en enhet kan stå | målrutan | 0 | 3 |
+| Snabbfrysning | is | 4 | valfri ruta | målrutan och dess fyra grannar | 10 | 2 |
+| Kedjeblixt | blixt | 4 | fiende | målet, sedan upp till 2 hopp | 20 | 2 |
+
+- Alla förmågor kräver siktlinje till målrutan (B7) och mäter räckvidd som Manhattanavstånd.
+- Områdesförmågor träffar **alla** enheter i området, även egna och den som kastar. Förhandsvisningen visar det.
+- Kedjeblixten hoppar till närmaste fiende inom 2 rutor från den senast träffade, och träffar aldrig samma enhet två gånger. Vid lika avstånd avgör utplaceringsordningen.
+- Dör enheten av sin egen förmåga är turen slut.
+- Förmågorna är data (`ABILITIES`) så långt det går. Bara kedjeblixten har en egen kodväg.
+
+**Varför:** fyra förmågor räcker för att bygga designens kombokedja (B10) och för att varje element ska ha en egen roll: eld förändrar terräng och gör områdesskada, is kontrollerar rörelse, blixt straffar den som står i vatten. Nedkylningen gör att den bästa förmågan inte kan användas varje tur. Friendly fire gör positionen viktig.
+
+### B10. Ytor och reaktioner
+
+En ruta kan ha en **yta** som element lämnar efter sig: pöl, ånga, is, elektrifierad eller isvägg. En isvägg räknas som en yta som blockerar som en pelare (förflyttning och siktlinje, 2 block hög). Ytor med tidsgräns räknas ned i början av varje runda:
+
+| Yta | Varar | Blir sedan |
+|---|---|---|
+| pöl | tills ett element ändrar den | – |
+| ånga | 2 rundor | ingenting |
+| is | 2 rundor | pöl |
+| elektrifierad | 1 runda | pöl |
+| isvägg | 3 rundor | pöl |
+
+**Reaktioner** när ett eldklot eller en snabbfrysning träffar rutor. Varje ruta reagerar en gång, utifrån hur den såg ut före förmågan:
+
+| Element | på | blir | och dessutom |
+|---|---|---|---|
+| eld | isvägg | pöl | vattnet rinner ut som pölar på grannrutor utan yta som inte ligger högre |
+| eld | is | pöl | |
+| eld | pöl eller elektrifierad | ånga | |
+| eld | ånga | ånga | varaktigheten börjar om |
+| is | pöl eller elektrifierad | is | enheter som står där fryses (B11) |
+| is | ånga | pöl | |
+
+**Blixt leds genom vatten.** När kedjeblixten träffar en enhet som står i en pöl eller på en elektrifierad ruta leds den genom hela det sammanhängande vattnet (grannar i fyra riktningar). Alla rutor där blir elektrifierade, och alla enheter som står där tar 15 skada, även egna. Samma vatten leder bara en gång per blixt.
+
+**Elektrifierad mark** ger 10 skada till en enhet som avslutar sin tur där.
+
+**Kombokedjan från designen** blir då: isvägg mellan fienderna → eldklot på väggen smälter den och fienderna står i vatten → kedjeblixt elektrifierar vattnet och skadar alla i det → snabbfrysning gör vattnet till is och fryser fienderna. Det är ett acceptanstest.
+
+**Varför:**
+- Reaktionerna är en tabell, så det är lätt att lägga till element och ytor.
+- "Utifrån hur rutan såg ut före" gör att en förmåga aldrig reagerar med sitt eget resultat, och att ordningen mellan rutor inte spelar roll.
+- Att vatten rinner ut från en smält vägg är det som gör att kedjan fungerar: fienderna bredvid väggen hamnar i vattnet.
+
+**Utanför MVP:n:** brinnande mark och löpeld med vind, magma och jord.
+
+### B11. Frysning
+
+En fryst enhet står över sin nästa tur. Den syns i turordningen men hoppas över, och frysningen tar slut när turen har passerat. Frysning är en **status** på enheten, med antal egna turer kvar. Fler statusar, som buffs, kan läggas till på samma sätt.
+
+**Varför:** att förlora en tur är kraftfullt men lätt att förstå, och det kräver att man först har fått fienden att stå i vatten.
+
+### B12. Slump: undvika i ånga
+
+Den som står i ånga har **50 % chans att undvika ett grundanfall**. Det är den enda slumpen hittills. Förmågor träffar alltid.
+
+- Slaget görs med matchens seedade slumpgenerator och syns som en egen händelse (`dodge`), så en replay upprepar det exakt.
+- **Förhandsvisningen visar alla utfall med sannolikhet**, till exempel "50 %: ingen skada · 50 %: B −30". Den tittar aldrig på det faktiska slaget, så förhandsvisningen avslöjar inte resultatet.
+
+**Varför:** slump ska gå att spåra till en källa och synas innan man väljer (se tech-stack.md). Ånga blir då ett skydd man kan skapa med eld på vatten.
+
 ## Platshållarvärden
 
 | Värde | Nu | Kommentar |
@@ -133,6 +203,11 @@ Ett parti har en rundgräns, i dag 30 rundor. Är partiet inte avgjort när sist
 | terrängkostnad | sten 1, gräs 1 | Vatten går inte att gå in på |
 | terräng | sten, gräs, vatten | Sten och gräs fungerar likadant än så länge |
 | objekt | pelare | Blockerar förflyttning. 2 block högt för siktlinje |
+| förmågor | se B9 | |
+| ledning i vatten | 15 skada | |
+| elektrifierad mark | 10 skada vid turens slut | |
+| undvika i ånga | 50 % mot grundanfall | |
+| frysning | 1 tur | |
 
 ## Textformat för kartor
 
@@ -149,13 +224,14 @@ a  .  .  B
 
 - En ruta är `<höjd><terräng>`, med ett valfritt `P` för pelare. Terräng är `s` (sten), `g` (gräs) eller `w` (vatten).
 - I `units:` är `.` en tom ruta och en bokstav en enhet med bokstaven som id. Liten bokstav är lag 0 och stor bokstav lag 1.
-- Ett valfritt avsnitt `stats:` sätter värden per enhet, en rad per enhet: `b  range=4 attack=20`. Värden som inte anges tar standardvärdena ovan.
+- Efter terrängen kan en yta anges efter `+`: `p` pöl, `s` ånga, `i` is, `e` elektrifierad, `W` isvägg. Till exempel `1g+p`.
+- Ett valfritt avsnitt `stats:` sätter värden per enhet, en rad per enhet: `b  range=4 attack=20 abilities=iceWall,quickFreeze`. Värden som inte anges tar standardvärdena ovan.
 
 ## Kartor
 
 | Karta | Storlek | Lag | Idé |
 |---|---|---|---|
-| `skirmish` | 8×8 | 3 mot 3: riddare (120 hp, 35 i anfall), bågskytt (80 hp, räckvidd 4, initiativ 12), spejare (förflyttning 5, hopphöjd 2, initiativ 14) | Punktsymmetrisk så att ingen sida har bättre mark. En platå i mitten nås via en ramp från varje sida. Pelare och vatten bryter siktlinjer |
+| `skirmish` | 8×8 | 3 mot 3: riddare med eldklot (120 hp, 35 i anfall), bågskytt med isvägg och snabbfrysning (80 hp, räckvidd 4, initiativ 12), spejare med kedjeblixt (förflyttning 5, hopphöjd 2, initiativ 14) | Punktsymmetrisk så att ingen sida har bättre mark. En platå i mitten nås via en ramp från varje sida. Pelare och vatten bryter siktlinjer |
 
 Alla inbyggda kartor testas för att vara punktsymmetriska, både terräng och enheter.
 
@@ -166,6 +242,7 @@ Hur en tur spelas i webbklienten. Det är också preliminärt.
 - Den aktiva enheten är alltid vald, eftersom bara den kan agera (B1). Att klicka på en annan enhet visar bara dess värden.
 - Blå rutor visar vart enheten kan gå. Håller man muspekaren över en sådan ruta visas vägen dit. **Ett klick flyttar direkt**, utan bekräftelse.
 - Röda rutor visar fiender som kan anfallas. **Ett anfall kräver bekräftelse**: klicket öppnar en förhandsvisning (hp före och efter, och vem som dör), och först "Confirm" utför anfallet. Esc avbryter.
+- Förmågor väljs med knapparna eller sifferknapparna `1`, `2` och så vidare. Möjliga mål blir lila, och det område förmågan skulle träffa blir gult när man håller muspekaren över ett mål. Klicket öppnar en förhandsvisning, precis som för anfall.
 - `E` eller knappen "End turn" avslutar turen.
 - Motståndarens drag spelas upp som animationer i tur och ordning, med en kort paus före varje botdrag.
 
@@ -181,8 +258,9 @@ Hur en tur spelas i webbklienten. Det är också preliminärt.
 | Får en handling avbryta förflyttningen, som "gå två, anfall, gå två"? | B2 | Om B2 känns stelt i speltest |
 | Ska närstrid kräva liten höjdskillnad, och ska räckvidd växa med höjd? | B6 | Efter speltest |
 | Ska enheter blockera siktlinje? | B7 | Efter speltest |
-| Reaktionsmatris och siffror | Element | Steg 5 |
-| Vind: med i MVP:n eller inte? | Element | Steg 5 |
+| Är siffrorna för förmågor och reaktioner rimliga? | B9, B10 | Balanskörningar i steg 6 |
+| Ska ånga också skydda mot förmågor, eller bara mot grundanfall? | B12 | Efter speltest |
+| Brinnande mark, vind och magma | B10 | Efter MVP:n |
 | Rätt rundgräns, och oavgjort eller seger på kvarvarande hp? | B8 | Efter bot-mot-bot-statistik |
 | Klasser (till exempel rogue) och hur de skiljer sig i värden och förmågor | Enheter | Efter MVP:n |
 
@@ -193,3 +271,4 @@ Hur en tur spelas i webbklienten. Det är också preliminärt.
 | 2026-10-14 | Första utkast: B1–B5, platshållarvärden och textformat för kartor |
 | 2026-10-14 | B6 grundanfall med höjdbonus, B7 siktlinje. B3 har terrängkostnad i stället för fast stegkostnad |
 | 2026-10-14 | B8 rundgräns (30, sedan oavgjort). Döda enheter lämnar turordningen direkt. `stats:` i textformatet och kartan `skirmish` |
+| 2026-10-14 | B9 förmågor, B10 ytor och reaktioner, B11 frysning, B12 undvika i ånga. Förhandsvisningen visar alla utfall med sannolikhet. Regelversion v1 |

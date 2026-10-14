@@ -12,9 +12,19 @@ describe("parseScenario", () => {
       . B .
     `);
     expect([map.cols, map.rows]).toEqual([3, 2]);
-    expect(tileAt(map, { x: 1, y: 0 })).toEqual({ height: 2, terrain: "stone", object: null });
+    expect(tileAt(map, { x: 1, y: 0 })).toEqual({
+      height: 2,
+      terrain: "stone",
+      object: null,
+      surface: null,
+    });
     expect(tileAt(map, { x: 2, y: 0 })?.terrain).toBe("water");
-    expect(tileAt(map, { x: 0, y: 1 })).toEqual({ height: 3, terrain: "stone", object: "pillar" });
+    expect(tileAt(map, { x: 0, y: 1 })).toEqual({
+      height: 3,
+      terrain: "stone",
+      object: "pillar",
+      surface: null,
+    });
     expect(units).toEqual([
       { id: "a", team: 0, x: 0, y: 0 },
       { id: "B", team: 1, x: 1, y: 1 },
@@ -39,6 +49,27 @@ describe("parseScenario", () => {
     ["a malformed stat", "a range=far"],
   ])("rejects stats for %s", (_, line) => {
     expect(() => parseScenario(`map:\n1g 1g\nunits:\na B\nstats:\n${line}`)).toThrow(SyntaxError);
+  });
+
+  it("reads surfaces and abilities", () => {
+    const { map, units } = parseScenario(`
+      map:
+      1g+p 1g+W 1g+e
+      units:
+      a  .  B
+      stats:
+      a  abilities=fireball,iceWall range=2
+    `);
+    expect(tileAt(map, { x: 0, y: 0 })?.surface).toEqual({ kind: "puddle", rounds: null });
+    expect(tileAt(map, { x: 1, y: 0 })?.surface).toEqual({ kind: "iceWall", rounds: 3 });
+    expect(tileAt(map, { x: 2, y: 0 })?.surface).toEqual({ kind: "electrified", rounds: 1 });
+    expect(units[0]).toMatchObject({ abilities: ["fireball", "iceWall"], range: 2 });
+  });
+
+  it("rejects unknown abilities", () => {
+    expect(() => parseScenario("map:\n1g 1g\nunits:\na B\nstats:\na abilities=nope")).toThrow(
+      SyntaxError,
+    );
   });
 
   it("allows a map without units", () => {

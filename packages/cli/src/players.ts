@@ -1,6 +1,13 @@
 import { createInterface } from "node:readline/promises";
 import { randomBot } from "@evt/bots";
-import { type Action, legalActions, type MatchState, preview, type Team } from "@evt/engine";
+import {
+  ABILITIES,
+  type Action,
+  legalActions,
+  type MatchState,
+  preview,
+  type Team,
+} from "@evt/engine";
 import { LEGEND, renderBoard, renderStatus, renderUnits } from "./render.ts";
 
 export interface Player {
@@ -28,15 +35,25 @@ function describeAction(state: MatchState, action: Action): string {
   switch (action.type) {
     case "move":
       return `move to (${action.to.x},${action.to.y})`;
-    case "attack": {
-      const outcome = preview(state, action);
-      const hits = outcome.hpChanges.map((c) => `${c.unit} ${c.delta}`).join(", ");
-      const deaths = outcome.deaths.length ? ` · kills ${outcome.deaths.join(", ")}` : "";
-      return `attack (${action.target.x},${action.target.y}): ${hits}${deaths}`;
-    }
+    case "attack":
+      return `attack (${action.target.x},${action.target.y}): ${describeOutcome(state, action)}`;
+    case "ability":
+      return `${ABILITIES[action.ability].name} (${action.target.x},${action.target.y}): ${describeOutcome(state, action)}`;
     case "endTurn":
       return "end turn";
   }
+}
+
+/** e.g. "B -30, kills B" or "50%: nothing | 50%: B -30" when there are rolls. */
+function describeOutcome(state: MatchState, action: Action): string {
+  const { branches } = preview(state, action);
+  const one = branches.map((b) => {
+    const hits = b.hpChanges.map((c) => `${c.unit} ${c.delta}`).join(", ") || "no damage";
+    const deaths = b.deaths.length ? `, kills ${b.deaths.join(", ")}` : "";
+    return `${hits}${deaths}`;
+  });
+  if (branches.length === 1) return one[0] ?? "";
+  return branches.map((b, i) => `${Math.round(b.chance * 100)}%: ${one[i]}`).join(" | ");
 }
 
 function humanPlayer(): Player {

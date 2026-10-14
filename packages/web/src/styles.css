@@ -216,3 +216,58 @@ button.secondary {
     width: 170px;
   }
 }
+
+.abilities {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+button.ability {
+  text-align: left;
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+button.ability.fire {
+  border-left: 4px solid #ff7a3d;
+}
+
+button.ability.ice {
+  border-left: 4px solid #8fdcff;
+}
+
+button.ability.lightning {
+  border-left: 4px solid #ffe34d;
+}
+
+button.ability.selected {
+  background: rgba(255, 210, 63, 0.18);
+  border-color: var(--accent);
+}
+
+.cooldown {
+  color: var(--muted);
+}
+
+.tile-info {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 8px 0 0;
+}
+
+.unit-card .row {
+  display: contents;
+}
+
+.branch + .branch {
+  border-top: 1px solid var(--border);
+  padding-top: 6px;
+}
+
+.chance {
+  color: var(--accent);
+  font-weight: 600;
+}

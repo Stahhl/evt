@@ -1,4 +1,5 @@
 import {
+  type AbilityId,
   type Action,
   activeUnit,
   legalActions,
@@ -14,9 +15,15 @@ export interface TurnOptions {
   readonly moves: ReadonlyMap<string, readonly Pos[]>;
   /** Attack actions keyed by the target tile. */
   readonly attacks: ReadonlyMap<string, Action>;
+  /** For each ready ability, its actions keyed by the target tile. */
+  readonly abilities: ReadonlyMap<AbilityId, ReadonlyMap<string, Action>>;
 }
 
-export const NO_OPTIONS: TurnOptions = { moves: new Map(), attacks: new Map() };
+export const NO_OPTIONS: TurnOptions = {
+  moves: new Map(),
+  attacks: new Map(),
+  abilities: new Map(),
+};
 
 /** What the active unit can do right now, if it belongs to one of these teams. */
 export function turnOptions(state: MatchState, teams: readonly number[]): TurnOptions {
@@ -28,6 +35,14 @@ export function turnOptions(state: MatchState, teams: readonly number[]): TurnOp
     for (const { to, path } of reachableTiles(state, active)) moves.set(posKey(to), path);
   }
   const attacks = new Map<string, Action>();
-  for (const a of legal) if (a.type === "attack") attacks.set(posKey(a.target), a);
-  return { moves, attacks };
+  const abilities = new Map<AbilityId, Map<string, Action>>();
+  for (const a of legal) {
+    if (a.type === "attack") attacks.set(posKey(a.target), a);
+    if (a.type === "ability") {
+      const targets = abilities.get(a.ability) ?? new Map<string, Action>();
+      targets.set(posKey(a.target), a);
+      abilities.set(a.ability, targets);
+    }
+  }
+  return { moves, attacks, abilities };
 }

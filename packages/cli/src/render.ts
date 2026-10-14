@@ -1,9 +1,26 @@
-import { type GameEvent, type MatchState, type Tile, tileAt, type Unit } from "@evt/engine";
+import {
+  ABILITIES,
+  type GameEvent,
+  type MatchState,
+  type SurfaceKind,
+  type Tile,
+  tileAt,
+  type Unit,
+} from "@evt/engine";
 
 const TERRAIN_SYMBOL: Record<Tile["terrain"], string> = { grass: ".", stone: "#", water: "~" };
+const SURFACE_SYMBOL: Record<SurfaceKind, string> = {
+  puddle: "=",
+  steam: "^",
+  ice: "*",
+  electrified: "!",
+  iceWall: "|",
+};
 
-export const LEGEND =
-  ". grass  # stone  ~ water  P pillar · digit = height · a-z team 0, A-Z team 1";
+export const LEGEND = [
+  ". grass  # stone  ~ water  P pillar · digit = height · a-z team 0, A-Z team 1",
+  "= puddle  ^ steam  * ice  ! electrified  | ice wall",
+].join("\n");
 
 /** The board with one 3-character cell per tile: symbol, height, space. */
 export function renderBoard(state: MatchState): string {
@@ -18,7 +35,10 @@ export function renderBoard(state: MatchState): string {
     for (let x = 0; x < map.cols; x++) {
       const tile = tileAt(map, { x, y }) as Tile;
       const unit = living.get(`${x},${y}`);
-      const symbol = unit?.id ?? (tile.object === "pillar" ? "P" : TERRAIN_SYMBOL[tile.terrain]);
+      const ground = tile.surface
+        ? SURFACE_SYMBOL[tile.surface.kind]
+        : TERRAIN_SYMBOL[tile.terrain];
+      const symbol = unit?.id ?? (tile.object === "pillar" ? "P" : ground);
       row += `${symbol}${tile.height} `;
     }
     rows.push(row.trimEnd());
@@ -32,7 +52,11 @@ export function renderUnits(state: MatchState): string {
     .map((u) => {
       const marker = u.id === active ? ">" : " ";
       const where = u.hp > 0 ? `(${u.x},${u.y})` : "dead";
-      return `${marker} ${u.id}  team ${u.team}  hp ${`${u.hp}/${u.maxHp}`.padEnd(7)}  ${where.padEnd(7)}  atk ${u.attack} rng ${u.range} mv ${u.move} jmp ${u.jump} ini ${u.initiative}`;
+      const abilities = u.abilities
+        .map((a) => (u.cooldowns[a] ? `${a}(${u.cooldowns[a]})` : a))
+        .join(" ");
+      const frozen = u.statuses.some((s) => s.kind === "frozen") ? " FROZEN" : "";
+      return `${marker} ${u.id}  team ${u.team}  hp ${`${u.hp}/${u.maxHp}`.padEnd(7)}  ${where.padEnd(7)}  atk ${u.attack} rng ${u.range} mv ${u.move} jmp ${u.jump} ini ${u.initiative}  ${abilities}${frozen}`;
     })
     .join("\n");
 }
@@ -60,7 +84,21 @@ export function describeEvent(e: GameEvent): string {
       return `${e.unit} moves to (${to?.x},${to?.y})`;
     }
     case "attacked":
-      return `${e.unit} hits ${e.target} for ${e.damage}`;
+      return e.damage === 0
+        ? `${e.unit} misses ${e.target}`
+        : `${e.unit} hits ${e.target} for ${e.damage}`;
+    case "dodge":
+      return `${e.unit} is in steam: ${e.chance}% dodge, ${e.success ? "dodged" : "hit"}`;
+    case "abilityUsed":
+      return `${e.unit} casts ${ABILITIES[e.ability].name} at (${e.target.x},${e.target.y})`;
+    case "damaged":
+      return `${e.unit} takes ${e.amount} (${e.source})`;
+    case "surfaceChanged":
+      return `(${e.pos.x},${e.pos.y}) ${e.from ?? "bare"} → ${e.to ?? "bare"}`;
+    case "frozen":
+      return `${e.unit} is frozen`;
+    case "turnSkipped":
+      return `${e.unit} is frozen and skips the turn`;
     case "died":
       return `${e.unit} dies`;
     case "turnEnded":

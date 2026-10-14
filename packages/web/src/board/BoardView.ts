@@ -2,7 +2,15 @@
  * The 3D board. It knows nothing about the rules: it draws a state, plays
  * events as animations and reports which tile the pointer is on.
  */
-import type { GameEvent, MatchState, Pos, Tile } from "@evt/engine";
+import {
+  ABILITIES,
+  type Element,
+  type GameEvent,
+  type MatchState,
+  type Pos,
+  type SurfaceKind,
+  type Tile,
+} from "@evt/engine";
 import * as THREE from "three";
 
 /** World units per height level. Tiles are 1×1. */
@@ -18,14 +26,23 @@ const TERRAIN_COLOR: Record<Tile["terrain"], number> = {
 };
 export const TEAM_COLOR = ["#3f7fe0", "#e0503f"] as const;
 
-export type Highlight = "move" | "path" | "attack" | "target" | "active";
+export type Highlight = "move" | "path" | "attack" | "ability" | "target" | "active";
 const HIGHLIGHT_COLOR: Record<Highlight, number> = {
   move: 0x7fd7ff,
   path: 0xffffff,
   attack: 0xff6a4d,
+  ability: 0xc792ff,
   target: 0xffd23f,
   active: 0xffe680,
 };
+
+const ELEMENT_COLOR: Record<Element, number> = {
+  fire: 0xff7a3d,
+  ice: 0x8fdcff,
+  lightning: 0xffe34d,
+};
+
+const FROZEN_COLOR = new THREE.Color(0xbfefff);
 
 export interface BoardCallbacks {
   onHover(pos: Pos | null): void;
@@ -51,6 +68,7 @@ export class BoardView {
   readonly #pickables: THREE.Object3D[] = [];
   readonly #overlays = new Map<string, THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>>();
   readonly #units = new Map<string, UnitView>();
+  readonly #surfaces = new Map<string, { kind: SurfaceKind; mesh: THREE.Mesh }>();
   readonly #resize: ResizeObserver;
   #tweens: Tween[] = [];
   #state: MatchState;
@@ -90,9 +108,15 @@ export class BoardView {
     });
   }
 
-  /** Places every unit where the state says, without animation. */
+  /** Shows the state as it is, without animation. */
   sync(state: MatchState): void {
     this.#state = state;
+    for (const [i, tile] of state.map.tiles.entries()) {
+      this.#setSurface(
+        { x: i % state.map.cols, y: Math.floor(i / state.map.cols) },
+        tile.surface?.kind ?? null,
+      );
+    }
     for (const u of state.units) {
       const view = this.#units.get(u.id);
       if (!view) continue;
@@ -101,6 +125,9 @@ export class BoardView {
       view.group.position.copy(this.#unitPosition(u));
       view.body.userData.pos = { x: u.x, y: u.y };
       view.body.material.emissive.setHex(0);
+      const color = new THREE.Color(TEAM_COLOR[u.team % TEAM_COLOR.length] ?? "#fff");
+      if (u.statuses.some((st) => st.kind === "frozen")) color.lerp(FROZEN_COLOR, 0.65);
+      view.body.material.color.copy(color);
     }
   }
 
@@ -128,6 +155,20 @@ export class BoardView {
         case "died":
           await this.#animateDeath(e.unit);
           break;
+        case "abilityUsed":
+          await this.#animateCast(e.unit, e.target, ABILITIES[e.ability].element);
+          break;
+        case "damaged":
+          await this.#animateHit(e.unit);
+          break;
+        case "surfaceChanged":
+          this.#setSurface(e.pos, e.to);
+          break;
+        case "frozen": {
+          const view = this.#units.get(e.unit);
+          if (view) view.body.material.color.lerp(FROZEN_COLOR, 0.65);
+          break;
+        }
       }
     }
     this.sync(state);
@@ -204,12 +245,57 @@ export class BoardView {
           new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false }),
         );
         overlay.rotation.x = -Math.PI / 2;
-        overlay.position.copy(this.#world(pos, top + 0.01));
+        overlay.position.copy(this.#world(pos, top + 0.04));
         overlay.visible = false;
         this.#scene.add(overlay);
         this.#overlays.set(key(pos), overlay);
       }
     }
+  }
+
+  #setSurface(pos: Pos, kind: SurfaceKind | null): void {
+    const k = key(pos);
+    const old = this.#surfaces.get(k);
+    if (old?.kind === kind) return;
+    if (old) {
+      this.#scene.remove(old.mesh);
+      old.mesh.geometry.dispose();
+      (old.mesh.material as THREE.Material).dispose();
+      const i = this.#pickables.indexOf(old.mesh);
+      if (i >= 0) this.#pickables.splice(i, 1);
+      this.#surfaces.delete(k);
+    }
+    if (!kind) return;
+    const top = this.#top(pos);
+    let mesh: THREE.Mesh;
+    if (kind === "iceWall" || kind === "steam") {
+      const wall = kind === "iceWall";
+      const h = wall ? 2 * BLOCK : 0.6;
+      mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(wall ? 0.8 : 0.92, h, wall ? 0.8 : 0.92),
+        new THREE.MeshLambertMaterial({
+          color: wall ? 0xbfe9ff : 0xffffff,
+          transparent: true,
+          opacity: wall ? 0.85 : 0.35,
+          depthWrite: wall,
+        }),
+      );
+      mesh.position.copy(this.#world(pos, top + h / 2));
+      if (wall) {
+        mesh.userData.pos = pos;
+        this.#pickables.push(mesh);
+      }
+    } else {
+      const color = { puddle: 0x3f8fe8, ice: 0xdaf4ff, electrified: 0xffe34d }[kind];
+      mesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(0.9, 0.9),
+        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.7, depthWrite: false }),
+      );
+      mesh.rotation.x = -Math.PI / 2;
+      mesh.position.copy(this.#world(pos, top + 0.02));
+    }
+    this.#scene.add(mesh);
+    this.#surfaces.set(k, { kind, mesh });
   }
 
   #buildUnit(id: string, team: number): void {
@@ -351,6 +437,34 @@ export class BoardView {
       attacker.group.position.copy(home).addScaledVector(toward, 1 - t);
       target.body.material.emissive.setRGB(0.9 * (1 - t), 0.1 * (1 - t), 0);
     });
+  }
+
+  /** A ball of the element's colour flies from the caster to the target tile. */
+  async #animateCast(casterId: string, target: Pos, element: Element): Promise<void> {
+    const caster = this.#units.get(casterId);
+    if (!caster) return;
+    const from = caster.group.position.clone().setY(caster.group.position.y + UNIT_HEIGHT);
+    const to = this.#world(target, this.#top(target) + 0.4);
+    const ball = new THREE.Mesh(
+      new THREE.SphereGeometry(0.16, 16, 12),
+      new THREE.MeshBasicMaterial({ color: ELEMENT_COLOR[element] }),
+    );
+    this.#scene.add(ball);
+    await this.#tween(260, (t) => {
+      ball.position.lerpVectors(from, to, t);
+      ball.position.y += Math.sin(t * Math.PI) * 0.8;
+    });
+    this.#scene.remove(ball);
+    ball.geometry.dispose();
+    ball.material.dispose();
+  }
+
+  async #animateHit(id: string): Promise<void> {
+    const view = this.#units.get(id);
+    if (!view) return;
+    await this.#tween(200, (t) =>
+      view.body.material.emissive.setRGB(0.9 * (1 - t), 0.1 * (1 - t), 0),
+    );
   }
 
   async #animateDeath(id: string): Promise<void> {

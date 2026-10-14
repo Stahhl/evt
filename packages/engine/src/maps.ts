@@ -6,7 +6,9 @@ export const MAPS: Readonly<Record<string, string>> = {
   /**
    * 8×8, 3 against 3, point-symmetric so neither side has better ground. A
    * plateau in the middle is reached by one ramp from each side; pillars and
-   * water break up the lines of sight.
+   * water break up the lines of sight. Each side has a fire knight, an ice
+   * archer and a lightning scout. Each side has a fire knight, an ice
+   * archer and a lightning scout.
    */
   skirmish: `
     map:
@@ -28,11 +30,11 @@ export const MAPS: Readonly<Record<string, string>> = {
     .  .  .  .  .  .  .  B
     .  .  .  .  .  C  A  .
     stats:
-    a  maxHp=120 attack=35
-    A  maxHp=120 attack=35
-    b  maxHp=80 attack=20 range=4 initiative=12
-    B  maxHp=80 attack=20 range=4 initiative=12
-    c  move=5 jump=2 attack=25 initiative=14
-    C  move=5 jump=2 attack=25 initiative=14
+    a  maxHp=120 attack=35 abilities=fireball
+    A  maxHp=120 attack=35 abilities=fireball
+    b  maxHp=80 attack=20 range=4 initiative=12 abilities=iceWall,quickFreeze
+    B  maxHp=80 attack=20 range=4 initiative=12 abilities=iceWall,quickFreeze
+    c  move=5 jump=2 attack=25 initiative=14 abilities=chainLightning
+    C  move=5 jump=2 attack=25 initiative=14 abilities=chainLightning
   `,
 };

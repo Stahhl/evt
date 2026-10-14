@@ -76,12 +76,12 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Klart när:** steg 3:s parti går att spela med musen mot `RandomBot`.
 
-### 5. Element, terräng och reaktioner (L)
+### 5. Element, terräng och reaktioner (L) – klart
 
 **Mål:** spelets kärna – det som gör det till *elemental* tactics.
 
 - Förmågor per element: eld (eldklot), is (isvägg, snabbfrysning), blixt (kedjeblixt). Data, inte specialkod per förmåga, så långt det går.
-- Rutstatus med räknare per runda: pöl, eld, ånga, is, magma (stelnar efter 3 rundor).
+- Rutstatus med räknare per runda: pöl, ånga, is, elektrifierad, isvägg. Brinnande mark och magma väntar till efter MVP:n.
 - Reaktioner mellan element och rutstatus: eld + is → vatten/ånga, blixt + vatten → elektrifierad pöl, eld sprider sig (med vind om det finns i MVP:n), osv. Stabil spridningsordning.
 - Buffs/debuffs med varaktighet, inklusive `dodgeChance` (ånga 50 %). Första användningen av PRNG:n i regler.
 - Förhandsvisningen visar reaktioner och sannolikheter, t.ex. "−30 · 50 % träff".

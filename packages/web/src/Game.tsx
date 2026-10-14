@@ -1,12 +1,16 @@
 import { randomBot } from "@evt/bots";
 import {
+  ABILITIES,
+  type AbilityId,
   type Action,
   activeUnit,
+  area,
   MAPS,
   type MatchState,
   type Pos,
   parseScenario,
   preview,
+  readyAbilities,
 } from "@evt/engine";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BoardView, type Highlight } from "./board/BoardView.ts";
@@ -26,6 +30,8 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
   const [hover, setHover] = useState<Pos | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [pending, setPending] = useState<Action | null>(null);
+  /** The ability the player is aiming, if any. */
+  const [mode, setMode] = useState<AbilityId | null>(null);
   const [log, setLog] = useState<string[]>([]);
   const clickRef = useRef<(pos: Pos) => void>(() => {});
 
@@ -96,8 +102,15 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
     [pending, view, myTurn],
   );
 
+  const ready = myTurn && view && active ? readyAbilities(view, active) : [];
+  const cancel = () => {
+    setPending(null);
+    setMode(null);
+  };
+
   const submit = (action: Action) => {
     setPending(null);
+    setMode(null);
     try {
       host?.submit(action);
     } catch (e) {
@@ -110,6 +123,11 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
     const unit = view?.units.find((u) => u.hp > 0 && u.x === pos.x && u.y === pos.y);
     if (unit) setSelected(unit.id);
     if (!myTurn) return;
+    if (mode) {
+      const cast = options.abilities.get(mode)?.get(k);
+      if (cast) return setPending(cast);
+      return cancel();
+    }
     const attack = options.attacks.get(k);
     if (attack) return setPending(attack);
     if (options.moves.has(k) && active) return submit({ type: "move", unit: active.id, to: pos });
@@ -118,7 +136,13 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setPending(null);
+      if (e.key === "Escape") cancel();
+      const index = Number(e.key) - 1;
+      const ability = active?.abilities[index];
+      if (myTurn && ability && ready.includes(ability)) {
+        setPending(null);
+        setMode(mode === ability ? null : ability);
+      }
       if ((e.key === "e" || e.key === "E") && myTurn && active) {
         submit({ type: "endTurn", unit: active.id });
       }
@@ -128,16 +152,31 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
   });
 
   useEffect(() => {
-    if (!board) return;
+    if (!board || !view) return;
     const highlights = new Map<string, Highlight>();
-    for (const k of options.moves.keys()) highlights.set(k, "move");
-    const hoverPath = hover ? options.moves.get(posKey(hover)) : undefined;
-    for (const p of hoverPath ?? []) highlights.set(posKey(p), "path");
-    for (const k of options.attacks.keys()) highlights.set(k, "attack");
-    if (pending?.type === "attack") highlights.set(posKey(pending.target), "target");
+    const aimed = pending?.type === "ability" ? pending : null;
+    const aiming = aimed?.ability ?? mode;
+    if (aiming) {
+      // Show where the ability can go, and the area it would hit.
+      for (const k of options.abilities.get(aiming)?.keys() ?? []) highlights.set(k, "ability");
+      const center =
+        aimed?.target ??
+        (hover && options.abilities.get(aiming)?.has(posKey(hover)) ? hover : null);
+      if (center) {
+        for (const p of area(view.map, center, ABILITIES[aiming].radius)) {
+          highlights.set(posKey(p), "target");
+        }
+      }
+    } else {
+      for (const k of options.moves.keys()) highlights.set(k, "move");
+      const hoverPath = hover ? options.moves.get(posKey(hover)) : undefined;
+      for (const p of hoverPath ?? []) highlights.set(posKey(p), "path");
+      for (const k of options.attacks.keys()) highlights.set(k, "attack");
+      if (pending?.type === "attack") highlights.set(posKey(pending.target), "target");
+    }
     if (active && myTurn) highlights.set(posKey(active), "active");
     board.setHighlights(highlights);
-  }, [board, options, hover, pending, active, myTurn]);
+  }, [board, view, options, hover, pending, mode, active, myTurn]);
 
   return (
     <div className="game">
@@ -148,11 +187,18 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
           localTeams={host.localTeams}
           myTurn={myTurn}
           selectedId={selected ?? active?.id ?? null}
+          hover={hover}
+          readyAbilities={ready}
+          mode={mode}
+          onMode={(a) => {
+            setPending(null);
+            setMode(a);
+          }}
           pending={pending}
           outcome={outcome}
           log={log}
           onConfirm={() => pending && submit(pending)}
-          onCancel={() => setPending(null)}
+          onCancel={cancel}
           onEndTurn={() => active && submit({ type: "endTurn", unit: active.id })}
           onRestart={onRestart}
         />

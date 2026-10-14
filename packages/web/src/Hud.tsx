@@ -1,4 +1,14 @@
-import type { Action, MatchState, Outcome, Unit } from "@evt/engine";
+import {
+  ABILITIES,
+  type AbilityId,
+  type Action,
+  type MatchState,
+  type Outcome,
+  type Pos,
+  type SurfaceKind,
+  tileAt,
+  type Unit,
+} from "@evt/engine";
 import { TEAM_COLOR } from "./board/BoardView.ts";
 import { resultText } from "./game/describe.ts";
 
@@ -7,9 +17,14 @@ interface HudProps {
   localTeams: readonly number[];
   myTurn: boolean;
   selectedId: string | null;
+  hover: Pos | null;
+  /** Abilities of the active unit that can be used now. */
+  readyAbilities: readonly AbilityId[];
+  mode: AbilityId | null;
   pending: Action | null;
   outcome: Outcome | null;
   log: readonly string[];
+  onMode(ability: AbilityId | null): void;
   onConfirm(): void;
   onCancel(): void;
   onEndTurn(): void;
@@ -17,6 +32,14 @@ interface HudProps {
 }
 
 const teamColor = (team: number) => TEAM_COLOR[team % TEAM_COLOR.length];
+
+const SURFACE_NAME: Record<SurfaceKind, string> = {
+  puddle: "Puddle",
+  steam: "Steam (50% dodge)",
+  ice: "Ice",
+  electrified: "Electrified",
+  iceWall: "Ice wall",
+};
 
 function HpBar({ unit }: { unit: Unit }) {
   return (
@@ -26,14 +49,62 @@ function HpBar({ unit }: { unit: Unit }) {
   );
 }
 
+function OutcomeView({ state, outcome }: { state: MatchState; outcome: Outcome }) {
+  const byId = new Map(state.units.map((u) => [u.id, u]));
+  return (
+    <>
+      {outcome.branches.map((branch, i) => {
+        const surfaces = new Map<string, number>();
+        for (const e of branch.events) {
+          if (e.type === "surfaceChanged" && e.to) {
+            surfaces.set(e.to, (surfaces.get(e.to) ?? 0) + 1);
+          }
+        }
+        const frozen = branch.events.flatMap((e) => (e.type === "frozen" ? [e.unit] : []));
+        return (
+          // biome-ignore lint/suspicious/noArrayIndexKey: branches have a fixed order
+          <div key={i} className="branch">
+            {outcome.branches.length > 1 && (
+              <div className="chance">{Math.round(branch.chance * 100)}% chance</div>
+            )}
+            <ul>
+              {branch.hpChanges.length === 0 && <li>No damage</li>}
+              {branch.hpChanges.map((c) => {
+                const before = byId.get(c.unit)?.hp ?? 0;
+                return (
+                  <li key={c.unit}>
+                    {c.unit}: {before} → {before + c.delta} <strong>({c.delta})</strong>
+                  </li>
+                );
+              })}
+              {branch.deaths.map((id) => (
+                <li key={`dies-${id}`}>{id} is defeated</li>
+              ))}
+              {frozen.map((id) => (
+                <li key={`frozen-${id}`}>{id} is frozen</li>
+              ))}
+              {[...surfaces].map(([kind, n]) => (
+                <li key={`surface-${kind}`}>
+                  {n} × {SURFACE_NAME[kind as SurfaceKind]}
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
 export function Hud(props: HudProps) {
   const { state, localTeams, myTurn, outcome } = props;
   const byId = new Map(state.units.map((u) => [u.id, u]));
   const activeId = state.result ? undefined : state.queue[0];
+  const activeUnit = activeId ? byId.get(activeId) : undefined;
   const chosen = props.selectedId ? byId.get(props.selectedId) : undefined;
   // A defeated unit is no longer shown; fall back to whoever is acting.
-  const selected = chosen && chosen.hp > 0 ? chosen : activeId ? byId.get(activeId) : undefined;
-  const activeUnit = activeId ? byId.get(activeId) : undefined;
+  const selected = chosen && chosen.hp > 0 ? chosen : activeUnit;
+  const hoverTile = props.hover ? tileAt(state.map, props.hover) : undefined;
 
   return (
     <>
@@ -45,6 +116,7 @@ export function Hud(props: HudProps) {
           {state.queue.map((id) => {
             const u = byId.get(id);
             if (!u) return null;
+            const frozen = u.statuses.some((s) => s.kind === "frozen");
             return (
               <li key={id} className={id === activeId ? "active" : ""}>
                 <span className="chip" style={{ background: teamColor(u.team) }}>
@@ -52,6 +124,7 @@ export function Hud(props: HudProps) {
                 </span>
                 <HpBar unit={u} />
                 <span className="num">{u.hp}</span>
+                {frozen && <span title="Frozen">❄</span>}
               </li>
             );
           })}
@@ -60,14 +133,45 @@ export function Hud(props: HudProps) {
           {state.result
             ? ""
             : myTurn
-              ? "Your turn: click a blue tile to move, a red tile to attack. E ends the turn."
+              ? props.mode
+                ? `${ABILITIES[props.mode].name}: pick a highlighted tile. Esc cancels.`
+                : "Blue tiles: move. Red: attack. Or pick an ability. E ends the turn."
               : activeUnit && localTeams.includes(activeUnit.team)
                 ? "…"
                 : "Opponent's turn"}
         </p>
-        <button type="button" disabled={!myTurn} onClick={props.onEndTurn}>
+        {myTurn && activeUnit && activeUnit.abilities.length > 0 && (
+          <div className="abilities">
+            {activeUnit.abilities.map((a, i) => {
+              const def = ABILITIES[a];
+              const cooldown = activeUnit.cooldowns[a] ?? 0;
+              const ready = props.readyAbilities.includes(a);
+              return (
+                <button
+                  type="button"
+                  key={a}
+                  className={`ability ${def.element} ${props.mode === a ? "selected" : ""}`}
+                  disabled={!ready}
+                  title={`${def.name}: range ${def.range}, cooldown ${def.cooldown}`}
+                  onClick={() => props.onMode(props.mode === a ? null : a)}
+                >
+                  {i + 1}. {def.name}
+                  {cooldown > 0 && <span className="cooldown"> ({cooldown})</span>}
+                </button>
+              );
+            })}
+          </div>
+        )}
+        <button type="button" className="end-turn" disabled={!myTurn} onClick={props.onEndTurn}>
           End turn (E)
         </button>
+        {props.hover && hoverTile && (
+          <p className="tile-info">
+            ({props.hover.x}, {props.hover.y}) · {hoverTile.terrain} · height {hoverTile.height}
+            {hoverTile.surface && ` · ${SURFACE_NAME[hoverTile.surface.kind]}`}
+            {hoverTile.surface?.rounds != null && ` (${hoverTile.surface.rounds})`}
+          </p>
+        )}
       </section>
 
       {selected && (
@@ -77,6 +181,7 @@ export function Hud(props: HudProps) {
               {selected.id}
             </span>{" "}
             {localTeams.includes(selected.team) ? "Ally" : "Enemy"}
+            {selected.statuses.some((s) => s.kind === "frozen") && " · frozen"}
           </h2>
           <HpBar unit={selected} />
           <dl>
@@ -94,26 +199,23 @@ export function Hud(props: HudProps) {
             <dd>{selected.jump}</dd>
             <dt>Initiative</dt>
             <dd>{selected.initiative}</dd>
+            {selected.abilities.map((a) => (
+              <div key={a} className="row">
+                <dt>{ABILITIES[a].name}</dt>
+                <dd>{selected.cooldowns[a] ? `in ${selected.cooldowns[a]}` : "ready"}</dd>
+              </div>
+            ))}
           </dl>
         </section>
       )}
 
       {props.pending && outcome && (
         <section className="panel preview">
-          <h2>Attack preview</h2>
-          <ul>
-            {outcome.hpChanges.map((c) => {
-              const before = byId.get(c.unit)?.hp ?? 0;
-              return (
-                <li key={c.unit}>
-                  {c.unit}: {before} → {before + c.delta} <strong>({c.delta})</strong>
-                </li>
-              );
-            })}
-            {outcome.deaths.map((id) => (
-              <li key={`dies-${id}`}>{id} is defeated</li>
-            ))}
-          </ul>
+          <h2>
+            {props.pending.type === "ability" ? ABILITIES[props.pending.ability].name : "Attack"}{" "}
+            preview
+          </h2>
+          <OutcomeView state={state} outcome={outcome} />
           <div className="buttons">
             <button type="button" onClick={props.onConfirm}>
               Confirm
