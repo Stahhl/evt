@@ -137,6 +137,7 @@ describe("death", () => {
       { type: "died", unit: "B" },
     ]);
     expect(hp(afterKill, "B")).toBe(0);
+    expect(afterKill.queue).not.toContain("B");
     expect(afterKill.result).toBeNull();
 
     const next = play(afterKill, { type: "endTurn", unit: "a" });
@@ -157,15 +158,17 @@ describe("preview", () => {
   it("matches apply exactly and summarises the changes", () => {
     const state = deepFreeze(scenario(ADJACENT, { B: { maxHp: 25 } }));
     const action: Action = { type: "attack", unit: "a", target: at(1, 0) };
-    const outcome = preview(state, action);
-    expect(outcome.state).toEqual(apply(state, action).state);
-    expect(outcome.hpChanges).toEqual([{ unit: "B", delta: -25 }]);
-    expect(outcome.deaths).toEqual(["B"]);
+    const { branches } = preview(state, action);
+    expect(branches).toHaveLength(1);
+    expect(branches[0]?.chance).toBe(1);
+    expect(branches[0]?.state).toEqual(apply(state, action).state);
+    expect(branches[0]?.hpChanges).toEqual([{ unit: "B", delta: -25 }]);
+    expect(branches[0]?.deaths).toEqual(["B"]);
   });
 
   it("has no hp changes for a move", () => {
-    const outcome = preview(scenario(ADJACENT), { type: "move", unit: "a", to: at(0, 1) });
-    expect(outcome.hpChanges).toEqual([]);
-    expect(outcome.deaths).toEqual([]);
+    const { branches } = preview(scenario(ADJACENT), { type: "move", unit: "a", to: at(0, 1) });
+    expect(branches[0]?.hpChanges).toEqual([]);
+    expect(branches[0]?.deaths).toEqual([]);
   });
 });

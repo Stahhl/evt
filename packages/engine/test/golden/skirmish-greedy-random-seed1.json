@@ -1,0 +1,832 @@
+{
+  "rulesVersion": "v1",
+  "setup": {
+    "map": {
+      "cols": 8,
+      "rows": 8,
+      "tiles": [
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": "pillar",
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 3,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 3,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 3,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 3,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": "pillar",
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null,
+          "surface": null
+        }
+      ]
+    },
+    "units": [
+      {
+        "id": "a",
+        "team": 0,
+        "x": 1,
+        "y": 0,
+        "maxHp": 120,
+        "attack": 35,
+        "abilities": [
+          "fireball"
+        ]
+      },
+      {
+        "id": "c",
+        "team": 0,
+        "x": 2,
+        "y": 0,
+        "move": 5,
+        "jump": 2,
+        "attack": 25,
+        "initiative": 14,
+        "abilities": [
+          "chainLightning"
+        ]
+      },
+      {
+        "id": "b",
+        "team": 0,
+        "x": 0,
+        "y": 1,
+        "maxHp": 80,
+        "attack": 20,
+        "range": 4,
+        "initiative": 12,
+        "abilities": [
+          "iceWall",
+          "quickFreeze"
+        ]
+      },
+      {
+        "id": "B",
+        "team": 1,
+        "x": 7,
+        "y": 6,
+        "maxHp": 80,
+        "attack": 20,
+        "range": 4,
+        "initiative": 12,
+        "abilities": [
+          "iceWall",
+          "quickFreeze"
+        ]
+      },
+      {
+        "id": "C",
+        "team": 1,
+        "x": 5,
+        "y": 7,
+        "move": 5,
+        "jump": 2,
+        "attack": 25,
+        "initiative": 14,
+        "abilities": [
+          "chainLightning"
+        ]
+      },
+      {
+        "id": "A",
+        "team": 1,
+        "x": 6,
+        "y": 7,
+        "maxHp": 120,
+        "attack": 35,
+        "abilities": [
+          "fireball"
+        ]
+      }
+    ],
+    "seed": 1
+  },
+  "actions": [
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 5,
+        "y": 2
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 4,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 1,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "ability",
+      "unit": "B",
+      "ability": "quickFreeze",
+      "target": {
+        "x": 4,
+        "y": 7
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 6,
+        "y": 3
+      }
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 5,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "ability",
+      "unit": "A",
+      "ability": "fireball",
+      "target": {
+        "x": 6,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 3,
+        "y": 4
+      }
+    },
+    {
+      "type": "ability",
+      "unit": "c",
+      "ability": "chainLightning",
+      "target": {
+        "x": 4,
+        "y": 7
+      }
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 2,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 4,
+        "y": 3
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 6,
+        "y": 3
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 7,
+        "y": 5
+      }
+    },
+    {
+      "type": "ability",
+      "unit": "B",
+      "ability": "iceWall",
+      "target": {
+        "x": 7,
+        "y": 2
+      }
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 6,
+        "y": 2
+      }
+    },
+    {
+      "type": "ability",
+      "unit": "a",
+      "ability": "fireball",
+      "target": {
+        "x": 7,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 1,
+        "y": 5
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "c",
+      "target": {
+        "x": 2,
+        "y": 5
+      }
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 4,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 6,
+        "y": 3
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 7,
+        "y": 5
+      }
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 6,
+        "y": 6
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "a",
+      "target": {
+        "x": 6,
+        "y": 7
+      }
+    },
+    {
+      "type": "ability",
+      "unit": "A",
+      "ability": "fireball",
+      "target": {
+        "x": 3,
+        "y": 6
+      }
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 5,
+        "y": 7
+      }
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 0,
+        "y": 7
+      }
+    },
+    {
+      "type": "ability",
+      "unit": "c",
+      "ability": "chainLightning",
+      "target": {
+        "x": 4,
+        "y": 7
+      }
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 0,
+        "y": 6
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "C",
+      "target": {
+        "x": 0,
+        "y": 7
+      }
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 4,
+        "y": 4
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 5,
+        "y": 7
+      }
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 5,
+        "y": 6
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "a",
+      "target": {
+        "x": 5,
+        "y": 7
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "c",
+      "target": {
+        "x": 0,
+        "y": 6
+      }
+    }
+  ],
+  "hashes": [
+    "daa26c66b83d4b0d",
+    "7d7fb6de7eda5053",
+    "5a476ae2ec82273f",
+    "e1f47e384da746a5",
+    "11bd957b40d648a1",
+    "3ebd444bdcf8d0be",
+    "dd4dee6c56b825fb",
+    "910dbda49b6460ba",
+    "e50819e1c02cad53",
+    "c8cb0a58ccc71c04",
+    "bf73d9d244db6ada",
+    "898eeb24d598a67d",
+    "c7fba7a7d67f3bc8",
+    "f36867ebd8a6e5f3",
+    "3d8f6fd2886493d9",
+    "899d9072d8c6f7ce",
+    "79fd5cdf181235e2",
+    "60d69c82ae54232b",
+    "c20b6e986aabcf7e",
+    "be52cf2f8de5e3ea",
+    "5565ba4501293f4e",
+    "7ad9d0ad2395edb4",
+    "a52203e86797fa31",
+    "1096149f78879faf",
+    "c8de92a882be2e9f",
+    "c887df8a042153f3",
+    "3e0b81983cbc9884",
+    "5b581ee96d25a8e8",
+    "cd164ab7d7b7f161",
+    "76e1f7078b44561e",
+    "7361b3d5f7dcc8a9",
+    "d03437dff44be710",
+    "c944cc23ecc8caf1",
+    "fc7b1b4a58be6757",
+    "72eec4d453453337",
+    "645fbdac020049c5",
+    "ade57a3bf5f8c023",
+    "73d1bc8984e28954",
+    "d07a5d9711912fb2",
+    "25b0490cd38dbb7c",
+    "09a958aa92743ae4",
+    "a49b4c8108db7826",
+    "ec8f47bdcfdd8dbd"
+  ]
+}

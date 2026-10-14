@@ -4,7 +4,7 @@
  * The line runs from the middle of the attacker's body to the middle of the
  * target's body: horizontally from tile centre to tile centre, vertically at
  * standing height + 1/2. It is blocked if it passes below the top of any tile
- * column in between (a pillar adds PILLAR_HEIGHT to its tile). Only the tiles
+ * column in between (a pillar or ice wall adds PILLAR_HEIGHT to its tile). Only the tiles
  * strictly between the two are checked, so neighbours always see each other.
  * A line through the exact corner of four tiles only enters the two on the
  * line, so corners never block. Units do not block sight.
@@ -13,14 +13,14 @@
  * spans [2x, 2x + 2] and its centre is 2x + 1; a unit on height h has its
  * middle at 2h + 1.
  */
-import { tileAt } from "./map.ts";
+import { hasWall, tileAt } from "./map.ts";
 import type { GameMap, Pos, Tile } from "./types.ts";
 
-/** How many blocks a pillar rises above its tile. */
+/** How many blocks a pillar or an ice wall rises above its tile. */
 export const PILLAR_HEIGHT = 2;
 
 function columnTop(tile: Tile): number {
-  return tile.height + (tile.object === "pillar" ? PILLAR_HEIGHT : 0);
+  return tile.height + (hasWall(tile) ? PILLAR_HEIGHT : 0);
 }
 
 export function hasLineOfSight(map: GameMap, from: Pos, to: Pos): boolean {

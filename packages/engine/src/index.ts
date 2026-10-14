@@ -1,13 +1,27 @@
-export { parseScenario } from "./ascii.ts";
-export { canonicalize, hashState } from "./hash.ts";
-export { inBounds, isStandable, tileAt } from "./map.ts";
 export {
+  ABILITIES,
+  type AbilityDef,
+  CONDUCTION_DAMAGE,
+  ELECTRIFIED_DAMAGE,
+  REACTIONS,
+  STEAM_DODGE_PERCENT,
+  SURFACE_ROUNDS,
+} from "./abilities.ts";
+export { parseScenario } from "./ascii.ts";
+export { dodgeChance } from "./effects.ts";
+export { canonicalize, hashState } from "./hash.ts";
+export { area, distance, hasWall, inBounds, isStandable, posIndex, tileAt } from "./map.ts";
+export { MAPS } from "./maps.ts";
+export {
+  abilityTargets,
   activeUnit,
   apply,
   attackDamage,
   attackTargets,
+  type Branch,
   checkAction,
   createMatch,
+  DEFAULT_MAX_ROUNDS,
   DEFAULT_STATS,
   HEIGHT_BONUS_CAP,
   HEIGHT_BONUS_PERCENT,
@@ -16,10 +30,12 @@ export {
   type MatchSetup,
   type Outcome,
   preview,
+  readyAbilities,
   type UnitSetup,
   unitAt,
 } from "./match.ts";
 export { MOVE_COST, reachableTiles } from "./movement.ts";
+export { type Replay, type ReplayCheck, ReplayRecorder, verifyReplay } from "./replay.ts";
 export {
   nextUint32,
   type RngState,
@@ -28,12 +44,18 @@ export {
   seedRng,
 } from "./rng.ts";
 export { hasLineOfSight, PILLAR_HEIGHT } from "./sight.ts";
+export { threatenedTiles } from "./threat.ts";
 export type {
+  AbilityId,
   Action,
+  Element,
   GameEvent,
   GameMap,
   MatchState,
   Pos,
+  Status,
+  Surface,
+  SurfaceKind,
   Team,
   Terrain,
   Tile,
@@ -42,5 +64,4 @@ export type {
   UnitStats,
 } from "./types.ts";
 
-/** Bumped for every change that can alter the outcome of a recorded match. */
-export const RULES_VERSION = "v0";
+export { RULES_VERSION } from "./version.ts";

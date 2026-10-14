@@ -2,6 +2,8 @@
 
 Status: förslag 2026-10-14 · Bygger på [tech-stack.md](tech-stack.md)
 
+**Läge:** alla steg är klara. Driftsättningen kräver att repot får hemligheterna `CLOUDFLARE_API_TOKEN` och `CLOUDFLARE_ACCOUNT_ID` (se README).
+
 ## Vad MVP:n är
 
 En spelare öppnar webbklienten, spelar ett helt parti mot en bot på en karta och vinner eller förlorar. Allt körs i webbläsaren via `LocalHost`, utan server.
@@ -52,7 +54,7 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Klart när:** scenariotester för vägsökning (höjd, blockering), siktlinje (bakom pelare, uppför) och ett anfall som dödar en enhet är gröna.
 
-### 3. Headless spel och replay (M)
+### 3. Headless spel och replay (M) – klart
 
 **Mål:** ett helt parti kan spelas och spelas upp i terminalen.
 
@@ -64,7 +66,7 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Klart när:** `evt play --p1 bot:random --p2 bot:random` spelar ett parti till slut, och dess replay ger samma hash när det körs om.
 
-### 4. Gående skelett i webben (M)
+### 4. Gående skelett i webben (M) – klart
 
 **Mål:** något klickbart så tidigt som möjligt, med samma motor.
 
@@ -76,12 +78,12 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Klart när:** steg 3:s parti går att spela med musen mot `RandomBot`.
 
-### 5. Element, terräng och reaktioner (L)
+### 5. Element, terräng och reaktioner (L) – klart
 
 **Mål:** spelets kärna – det som gör det till *elemental* tactics.
 
 - Förmågor per element: eld (eldklot), is (isvägg, snabbfrysning), blixt (kedjeblixt). Data, inte specialkod per förmåga, så långt det går.
-- Rutstatus med räknare per runda: pöl, eld, ånga, is, magma (stelnar efter 3 rundor).
+- Rutstatus med räknare per runda: pöl, ånga, is, elektrifierad, isvägg. Brinnande mark och magma väntar till efter MVP:n.
 - Reaktioner mellan element och rutstatus: eld + is → vatten/ånga, blixt + vatten → elektrifierad pöl, eld sprider sig (med vind om det finns i MVP:n), osv. Stabil spridningsordning.
 - Buffs/debuffs med varaktighet, inklusive `dodgeChance` (ånga 50 %). Första användningen av PRNG:n i regler.
 - Förhandsvisningen visar reaktioner och sannolikheter, t.ex. "−30 · 50 % träff".
@@ -90,7 +92,7 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Att besluta:** den exakta reaktionsmatrisen och siffrorna för MVP:n. Börja med en liten tabell (3 element × 5 rutstatusar) och utöka senare.
 
-### 6. Girig bot och balans (S)
+### 6. Girig bot och balans (S) – klart
 
 **Mål:** en motståndare som är värd att spela mot.
 
@@ -99,7 +101,7 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Klart när:** girig slår slump i en klar majoritet av partierna och ett parti mot girig känns som ett riktigt motstånd.
 
-### 7. Spelbar MVP i webben (M)
+### 7. Spelbar MVP i webben (M) – klart
 
 **Mål:** från skelett till något man kan ge till en testspelare.
 

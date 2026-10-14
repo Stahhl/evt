@@ -10,14 +10,29 @@
  *   .  .  b  .
  *
  * A tile is <height digit><terrain> with an optional P for a pillar. Terrain is
- * s (stone), g (grass) or w (water). In the units grid, `.` is an empty tile and
+ * s (stone), g (grass) or w (water). A surface can follow after a +: p
+ * (puddle), s (steam), i (ice), e (electrified) or W (ice wall), e.g. 1g+p. In the units grid, `.` is an empty tile and
  * a letter is a unit with that letter as id: lowercase is team 0, uppercase team 1.
+ *
+ * An optional stats section overrides DEFAULT_STATS per unit:
+ *
+ *   stats:
+ *   a  range=4 attack=20 abilities=fireball,iceWall
+ *   B  maxHp=120
  */
-import type { UnitSetup } from "./match.ts";
-import type { GameMap, Terrain, Tile } from "./types.ts";
+import { isAbilityId, SURFACE_ROUNDS } from "./abilities.ts";
+import { DEFAULT_STATS, type UnitSetup } from "./match.ts";
+import type { AbilityId, GameMap, SurfaceKind, Terrain, Tile, UnitStats } from "./types.ts";
 
 const TERRAIN: Record<string, Terrain> = { s: "stone", g: "grass", w: "water" };
-const TILE = /^(\d)([sgw])(P?)$/;
+const SURFACE: Record<string, SurfaceKind> = {
+  p: "puddle",
+  s: "steam",
+  i: "ice",
+  e: "electrified",
+  W: "iceWall",
+};
+const TILE = /^(\d)([sgw])(P?)(?:\+([psieW]))?$/;
 const UNIT = /^[a-zA-Z]$/;
 
 export function parseScenario(text: string): { map: GameMap; units: UnitSetup[] } {
@@ -46,10 +61,12 @@ export function parseScenario(text: string): { map: GameMap; units: UnitSetup[] 
     for (const token of row) {
       const m = token.match(TILE);
       if (!m) throw new SyntaxError(`bad tile "${token}" in map row ${y}`);
+      const surface = m[4] ? (SURFACE[m[4]] as SurfaceKind) : null;
       tiles.push({
         height: Number(m[1]),
         terrain: TERRAIN[m[2] as string] as Terrain,
         object: m[3] ? "pillar" : null,
+        surface: surface ? { kind: surface, rounds: SURFACE_ROUNDS[surface] } : null,
       });
     }
   }
@@ -69,6 +86,32 @@ export function parseScenario(text: string): { map: GameMap; units: UnitSetup[] 
       if (units.some((u) => u.id === token)) throw new SyntaxError(`unit "${token}" appears twice`);
       units.push({ id: token, team: token === token.toLowerCase() ? 0 : 1, x, y });
     }
+  }
+  for (const [line, [id, ...pairs]] of (sections.stats ?? []).entries()) {
+    const index = units.findIndex((u) => u.id === id);
+    if (index < 0) throw new SyntaxError(`stats line ${line} names unknown unit "${id}"`);
+    const stats: Record<string, number> = {};
+    let abilities: AbilityId[] | undefined;
+    for (const pair of pairs) {
+      const list = pair.match(/^abilities=([\w,]+)$/);
+      if (list?.[1]) {
+        abilities = list[1].split(",").map((a) => {
+          if (!isAbilityId(a)) throw new SyntaxError(`unknown ability "${a}" for unit "${id}"`);
+          return a;
+        });
+        continue;
+      }
+      const m = pair.match(/^(\w+)=(-?\d+)$/);
+      if (!m?.[1] || !(m[1] in DEFAULT_STATS)) {
+        throw new SyntaxError(`bad stat "${pair}" for unit "${id}"`);
+      }
+      stats[m[1]] = Number(m[2]);
+    }
+    units[index] = {
+      ...units[index],
+      ...(stats as Partial<UnitStats>),
+      ...(abilities ? { abilities } : {}),
+    } as UnitSetup;
   }
   return { map, units };
 }

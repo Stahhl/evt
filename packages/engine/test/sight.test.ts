@@ -51,6 +51,11 @@ describe("hasLineOfSight", () => {
     height: fc.integer({ min: 0, max: 6 }),
     terrain: fc.constantFrom("stone", "grass", "water"),
     object: fc.constantFrom(null, "pillar"),
+    surface: fc.constantFrom(
+      null,
+      { kind: "iceWall", rounds: 3 },
+      { kind: "puddle", rounds: null },
+    ),
   });
   const mapWithTwoTiles = fc
     .record({ cols: fc.integer({ min: 1, max: 8 }), rows: fc.integer({ min: 1, max: 8 }) })

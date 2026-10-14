@@ -8,10 +8,33 @@ import type { RngState } from "./rng.ts";
 export type Terrain = "stone" | "grass" | "water";
 export type TileObject = "pillar";
 
+/**
+ * What elements leave on a tile. An ice wall is a surface too: it is
+ * temporary, made and removed by elements, and blocks like a pillar.
+ */
+export type SurfaceKind = "puddle" | "steam" | "ice" | "electrified" | "iceWall";
+
+export interface Surface {
+  readonly kind: SurfaceKind;
+  /** Rounds left before it changes (see SURFACE_ROUNDS), or null if it lasts. */
+  readonly rounds: number | null;
+}
+
 export interface Tile {
   readonly height: number;
   readonly terrain: Terrain;
   readonly object: TileObject | null;
+  readonly surface: Surface | null;
+}
+
+export type Element = "fire" | "ice" | "lightning";
+export type AbilityId = "fireball" | "iceWall" | "quickFreeze" | "chainLightning";
+
+/** A temporary effect on a unit. */
+export interface Status {
+  readonly kind: "frozen";
+  /** Own turns left. A frozen unit skips its turns. */
+  readonly turns: number;
 }
 
 /** x is the column, y the row. (0, 0) is the top-left corner in ASCII maps. */
@@ -48,6 +71,10 @@ export interface Unit extends UnitStats, Pos {
   readonly team: Team;
   /** 0 means dead. Dead units stay in the state for replays and the HUD. */
   readonly hp: number;
+  readonly abilities: readonly AbilityId[];
+  /** Own turns left until each ability can be used again. 0 means ready. */
+  readonly cooldowns: Readonly<Record<string, number>>;
+  readonly statuses: readonly Status[];
 }
 
 export interface MatchState {
@@ -55,6 +82,8 @@ export interface MatchState {
   /** In setup order, which breaks initiative ties. */
   readonly units: readonly Unit[];
   readonly round: number;
+  /** The match is a draw if it is still running when this round ends. */
+  readonly maxRounds: number;
   /** Units that still act this round. The first one is the active unit. */
   readonly queue: readonly string[];
   /** What the active unit has done this turn. */
@@ -66,8 +95,14 @@ export interface MatchState {
 
 export type Action =
   | { readonly type: "move"; readonly unit: string; readonly to: Pos }
-  /** target is a tile, so area abilities can use the same shape later. */
+  /** target is a tile, the same shape as abilities. */
   | { readonly type: "attack"; readonly unit: string; readonly target: Pos }
+  | {
+      readonly type: "ability";
+      readonly unit: string;
+      readonly ability: AbilityId;
+      readonly target: Pos;
+    }
   | { readonly type: "endTurn"; readonly unit: string };
 
 export type GameEvent =
@@ -75,12 +110,41 @@ export type GameEvent =
   | { readonly type: "turnStarted"; readonly unit: string }
   /** path runs from the first step to the destination; the start is not included. */
   | { readonly type: "moved"; readonly unit: string; readonly path: readonly Pos[] }
+  /** A dodge roll, e.g. for a unit standing in steam. Comes before the attack it is for. */
+  | {
+      readonly type: "dodge";
+      readonly unit: string;
+      readonly chance: number;
+      readonly success: boolean;
+    }
+  /** A basic attack. damage is 0 if it was dodged. */
   | {
       readonly type: "attacked";
       readonly unit: string;
       readonly target: string;
       readonly damage: number;
     }
+  | {
+      readonly type: "abilityUsed";
+      readonly unit: string;
+      readonly ability: AbilityId;
+      readonly target: Pos;
+    }
+  /** Damage from anything but a basic attack. */
+  | {
+      readonly type: "damaged";
+      readonly unit: string;
+      readonly amount: number;
+      readonly source: AbilityId | "conduction" | "electrified";
+    }
+  | {
+      readonly type: "surfaceChanged";
+      readonly pos: Pos;
+      readonly from: SurfaceKind | null;
+      readonly to: SurfaceKind | null;
+    }
+  | { readonly type: "frozen"; readonly unit: string; readonly turns: number }
+  | { readonly type: "turnSkipped"; readonly unit: string }
   | { readonly type: "died"; readonly unit: string }
   | { readonly type: "turnEnded"; readonly unit: string }
   | { readonly type: "matchEnded"; readonly winner: Team | null };

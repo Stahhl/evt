@@ -1,0 +1,39 @@
+name: Balance
+
+# Bot-vs-bot runs that show how the rules play out: win rates, first-move
+# advantage and match length. They do not fail on results; read the summary.
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      games:
+        description: Games per matchup
+        default: "200"
+
+jobs:
+  sim:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Simulate
+        env:
+          GAMES: ${{ inputs.games || '200' }}
+        run: |
+          {
+            echo "## Balance runs on skirmish"
+            for matchup in "bot:greedy bot:greedy" "bot:greedy bot:random" "bot:random bot:random"; do
+              set -- $matchup
+              echo
+              echo "### $1 vs $2"
+              echo '```'
+              pnpm --silent evt sim --p1 "$1" --p2 "$2" -n "$GAMES"
+              echo '```'
+            done
+          } | tee -a "$GITHUB_STEP_SUMMARY"
