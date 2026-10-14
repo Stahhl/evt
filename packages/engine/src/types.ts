@@ -37,6 +37,10 @@ export interface UnitStats {
   readonly jump: number;
   /** Higher acts earlier in the round. */
   readonly initiative: number;
+  /** Damage of a basic attack between units on the same height. */
+  readonly attack: number;
+  /** Largest Manhattan distance a basic attack reaches. */
+  readonly range: number;
 }
 
 export interface Unit extends UnitStats, Pos {
@@ -62,6 +66,8 @@ export interface MatchState {
 
 export type Action =
   | { readonly type: "move"; readonly unit: string; readonly to: Pos }
+  /** target is a tile, so area abilities can use the same shape later. */
+  | { readonly type: "attack"; readonly unit: string; readonly target: Pos }
   | { readonly type: "endTurn"; readonly unit: string };
 
 export type GameEvent =
@@ -69,5 +75,12 @@ export type GameEvent =
   | { readonly type: "turnStarted"; readonly unit: string }
   /** path runs from the first step to the destination; the start is not included. */
   | { readonly type: "moved"; readonly unit: string; readonly path: readonly Pos[] }
+  | {
+      readonly type: "attacked";
+      readonly unit: string;
+      readonly target: string;
+      readonly damage: number;
+    }
+  | { readonly type: "died"; readonly unit: string }
   | { readonly type: "turnEnded"; readonly unit: string }
   | { readonly type: "matchEnded"; readonly winner: Team | null };

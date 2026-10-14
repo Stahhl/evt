@@ -27,7 +27,7 @@ Storlek är relativ: S < M < L.
 
 Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
-### 1. Kärnmodell och turordning (M)
+### 1. Kärnmodell och turordning (M) – klart
 
 **Mål:** motorns datatyper finns och ett parti kan startas och avslutas.
 
@@ -41,13 +41,13 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Beslutat:** turordning per enhet efter initiativ, och en förflyttning plus en handling per tur. Se [gameplay.md](gameplay.md) (B1, B2).
 
-### 2. Förflyttning, siktlinje och strid (M)
+### 2. Förflyttning, siktlinje och strid (M) – klart
 
 **Mål:** enheter kan gå, se och skada varandra.
 
 - Vägsökning med höjd: kostnad per terräng, max hopphöjd upp/ned, objekt blockerar. Stabil ordning (BFS med fast grannordning).
 - Siktlinje i 3D över voxelrutnätet med heltalsmatematik (t.ex. Bresenham/DDA på dubblad upplösning). Objekt och höga rutor blockerar.
-- Grundanfall: räckvidd, skada, död. Höjdfördel som heltalsmodifierare om designen har det.
+- Grundanfall: räckvidd, skada, död. Höjdfördel som heltalsmodifierare.
 - `preview(state, action) → Outcome` som kör `apply` på en kopia och sammanfattar (hp-förändringar, döda, sannolikheter).
 
 **Klart när:** scenariotester för vägsökning (höjd, blockering), siktlinje (bakom pelare, uppför) och ett anfall som dödar en enhet är gröna.

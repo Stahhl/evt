@@ -4,15 +4,22 @@ export { inBounds, isStandable, tileAt } from "./map.ts";
 export {
   activeUnit,
   apply,
+  attackDamage,
+  attackTargets,
   checkAction,
   createMatch,
   DEFAULT_STATS,
+  HEIGHT_BONUS_CAP,
+  HEIGHT_BONUS_PERCENT,
   IllegalActionError,
   legalActions,
   type MatchSetup,
+  type Outcome,
+  preview,
   type UnitSetup,
+  unitAt,
 } from "./match.ts";
-export { reachableTiles } from "./movement.ts";
+export { MOVE_COST, reachableTiles } from "./movement.ts";
 export {
   nextUint32,
   type RngState,
@@ -20,6 +27,7 @@ export {
   rollChance,
   seedRng,
 } from "./rng.ts";
+export { hasLineOfSight, PILLAR_HEIGHT } from "./sight.ts";
 export type {
   Action,
   GameEvent,

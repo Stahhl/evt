@@ -39,22 +39,24 @@ Den aktiva enheten får **flytta en gång och göra en handling**, i valfri ordn
 
 **Alternativ vi valde bort:** handlingspoäng (AP) som delas mellan förflyttning och handlingar. Det ger fler val, men blir svårare att förhandsvisa och balansera i ett tidigt skede.
 
-**Läge i koden:** det finns ännu inga handlingar utöver förflyttning, så turen avslutas med `endTurn` tills anfall kommer i steg 2.
+**Läge i koden:** den enda handlingen hittills är grundanfallet (B6). Förmågor kommer i steg 5.
 
 ### B3. Förflyttning
 
-- Fyra riktningar, inga diagonaler. Varje steg kostar 1, och en enhet går högst `move` steg.
+- Fyra riktningar, inga diagonaler. Att gå in på en ruta kostar enligt dess terräng, och en enhet har `move` att spendera per förflyttning. Just nu kostar sten och gräs 1, och vatten går inte att gå in på.
 - Ett steg får gå upp eller ned högst `jump` i höjd.
 - Vatten och pelare går inte att gå på.
 - Man får gå **genom allierade** men inte genom fiender, och man får inte stanna på en ruta där någon står.
-- Om flera vägar är lika korta väljs vägen deterministiskt (grannar i ordningen norr, öster, söder, väster). Vägen skickas i händelsen så att klienten kan animera den.
+- Om flera vägar är lika billiga väljs vägen deterministiskt (grannar i ordningen norr, öster, söder, väster). Vägen skickas i händelsen så att klienten kan animera den.
 
 **Varför:**
 - Fyra riktningar gör räckvidd och avstånd lätta att läsa på ett isometriskt bräde.
 - Hopphöjd gör höjd till en del av terrängen: en klippa är ett hinder för vissa enheter och inte för andra.
 - Att gå genom allierade undviker trafikstockning med små lag. Att fiender blockerar gör att man kan skydda en enhet genom att ställa sig i vägen.
 
-**Att se över i steg 2:** terrängkostnad (till exempel att ett steg i vatten kostar mer i stället för att vara förbjudet), fallskada och om det ska vara asymmetriskt att gå upp och gå ned.
+**Varför terrängkostnad:** tabellen finns redan så att steg 5 kan låta till exempel is eller grunt vatten kosta mer, utan att reglerna för förflyttning skrivs om.
+
+**Att se över senare:** fallskada, och om det ska vara asymmetriskt att gå upp och gå ned.
 
 ### B4. Seger
 
@@ -71,6 +73,42 @@ En ruta har i dag:
 - **terräng**: sten, gräs eller vatten
 - **objekt**: inget eller pelare
 
+### B6. Grundanfall
+
+Varje enhet har ett grundanfall som räknas som turens handling.
+
+- Målet anges som en **ruta**, och där måste det stå en levande fiende.
+- **Räckvidd** är Manhattanavstånd på rutnätet (`range`), samma mått som förflyttningen. Ett närstridsanfall har räckvidd 1.
+- Anfallaren måste ha **siktlinje** till målet (B7).
+- Skadan är enhetens `attack`, justerad för **höjd**: +10 % per block anfallaren står över målet och −10 % per block under, högst ±3 block. Avrundas nedåt. Med 30 i anfall blir det 33 ett block ovanför och 27 ett block nedanför.
+- Hp går inte under 0. En enhet med 0 hp är död: den tas bort ur rundans ordning, rutan blir ledig och den blockerar inte längre förflyttning.
+
+**Varför:**
+- Mål som ruta gör att områdesförmågor i steg 5 kan använda samma form.
+- Manhattanavstånd gör att räckvidd och förflyttning läses på samma sätt på brädet.
+- Höjdbonusen gör höjd värd att ta, och procent per block är lätt att visa i förhandsvisningen. Taket hindrar att en klippa avgör allt. Heltal med avrundning nedåt håller motorn deterministisk.
+
+**Att se över:** om närstrid ska kräva att höjdskillnaden är högst `jump` (i dag kan man slå en granne oavsett höjd), och om räckvidd ska påverkas av höjd (bågskytt på en kulle når längre).
+
+### B7. Siktlinje
+
+En rak linje dras från mitten av anfallarens kropp till mitten av målets kropp: från rutans mitt horisontellt, och ett halvt block över rutans höjd vertikalt. Linjen är blockerad om den någonstans går **under toppen** av en ruta den passerar.
+
+- Bara rutorna mellan de två kontrolleras. Grannar ser alltid varandra, även diagonalt.
+- En pelare är 2 block högre än sin ruta.
+- Går linjen exakt genom ett hörn räknas bara de rutor den faktiskt går in i, så hörn blockerar inte.
+- Enheter blockerar inte siktlinje.
+- Siktlinjen är symmetrisk: ser A B så ser B A.
+- Allt räknas med heltal (koordinaterna dubblas så att alla mittpunkter blir heltal), så resultatet är exakt och lika på alla plattformar.
+
+**Varför:**
+- Mitt-till-mitt är enkelt att förklara och att visa som en linje i klienten.
+- Exakt geometri i stället för stickprov längs linjen ger inga konstiga undantag där en tunn kant ibland blockerar och ibland inte.
+- Symmetri känns rättvist: står du där du kan skjuta mig kan jag skjuta dig.
+- Att enheter inte blockerar gör bräden med få enheter mindre klaustrofobiska och siktlinjen lättare att förutse. Kan ändras om det behövs för att skydda en enhet med en annan.
+
+**Följder att känna till:** på samma höjd blockerar en ruta som är ett block högre. Från höjden går det att skjuta över ett hinder om man står tillräckligt högt. Den som står nedanför en klippa ser inte någon som står längre in på klippan, bara den som står på kanten.
+
 ## Platshållarvärden
 
 | Värde | Nu | Kommentar |
@@ -79,8 +117,12 @@ En ruta har i dag:
 | förflyttning (`move`) | 4 | |
 | hopphöjd (`jump`) | 1 | |
 | initiativ | 10 | Sätts per enhet. Utan klasser är alla lika, och då avgör utplaceringsordningen |
+| anfall (`attack`) | 30 | Fyra träffar dödar en enhet med 100 hp, även ett block underifrån |
+| räckvidd (`range`) | 1 | Närstrid. Avståndsenheter sätts per enhet tills klasser finns |
+| höjdbonus | ±10 % per block, högst 3 block | |
+| terrängkostnad | sten 1, gräs 1 | Vatten går inte att gå in på |
 | terräng | sten, gräs, vatten | Sten och gräs fungerar likadant än så länge |
-| objekt | pelare | Blockerar förflyttning, och siktlinje från steg 2 |
+| objekt | pelare | Blockerar förflyttning. 2 block högt för siktlinje |
 
 ## Textformat för kartor
 
@@ -105,8 +147,8 @@ a  .  .  B
 |---|---|---|
 | Hur bryts lika initiativ rättvist? Varannan per lag? | B1 | När vi har bot-mot-bot-statistik |
 | Får en handling avbryta förflyttningen, som "gå två, anfall, gå två"? | B2 | Om B2 känns stelt i speltest |
-| Höjdfördel för anfall, och i så fall hur mycket? | Strid | Steg 2 |
-| Siktlinjens exakta regel: från vilken punkt till vilken, och blockerar halva rutor? | Strid | Steg 2 |
+| Ska närstrid kräva liten höjdskillnad, och ska räckvidd växa med höjd? | B6 | Efter speltest |
+| Ska enheter blockera siktlinje? | B7 | Efter speltest |
 | Reaktionsmatris och siffror | Element | Steg 5 |
 | Vind: med i MVP:n eller inte? | Element | Steg 5 |
 | Rundgräns eller oavgjort efter N rundor, så att bottar inte kan dra ut på partiet? | B4 | Steg 3 |
@@ -117,3 +159,4 @@ a  .  .  B
 | Datum | Ändring |
 |---|---|
 | 2026-10-14 | Första utkast: B1–B5, platshållarvärden och textformat för kartor |
+| 2026-10-14 | B6 grundanfall med höjdbonus, B7 siktlinje. B3 har terrängkostnad i stället för fast stegkostnad |
