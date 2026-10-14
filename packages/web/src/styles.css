@@ -41,6 +41,7 @@ body,
 
 .panel {
   position: absolute;
+  z-index: 1;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -209,11 +210,15 @@ button.secondary {
 
 @media (max-width: 640px) {
   .unit-card,
-  .log {
+  .log,
+  .turn-order ol,
+  .turn-order .hint,
+  .turn-order .tile-info {
     display: none;
   }
   .turn-order {
-    width: 170px;
+    width: auto;
+    max-width: 60%;
   }
 }
 
@@ -270,4 +275,59 @@ button.ability.selected {
 .chance {
   color: var(--accent);
   font-weight: 600;
+}
+
+.toolbar {
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+}
+
+.toolbar select {
+  font: inherit;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+
+.toolbar select option {
+  background: var(--bg);
+}
+
+.toolbar button {
+  padding: 4px 10px;
+}
+
+button.secondary.on {
+  border-color: #ff6a4d;
+  background: rgba(255, 74, 61, 0.18);
+}
+
+.result .summary {
+  color: var(--muted);
+  margin: -8px 0 16px;
+}
+
+.result .buttons {
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .toolbar {
+    top: auto;
+    bottom: 12px;
+    left: 12px;
+    transform: none;
+    flex-wrap: wrap;
+    max-width: calc(100% - 24px);
+  }
+  .toolbar label {
+    display: none;
+  }
 }

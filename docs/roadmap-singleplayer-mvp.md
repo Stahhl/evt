@@ -2,6 +2,8 @@
 
 Status: förslag 2026-10-14 · Bygger på [tech-stack.md](tech-stack.md)
 
+**Läge:** alla steg är klara. Driftsättningen kräver att repot får hemligheterna `CLOUDFLARE_API_TOKEN` och `CLOUDFLARE_ACCOUNT_ID` (se README).
+
 ## Vad MVP:n är
 
 En spelare öppnar webbklienten, spelar ett helt parti mot en bot på en karta och vinner eller förlorar. Allt körs i webbläsaren via `LocalHost`, utan server.
@@ -99,7 +101,7 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Klart när:** girig slår slump i en klar majoritet av partierna och ett parti mot girig känns som ett riktigt motstånd.
 
-### 7. Spelbar MVP i webben (M)
+### 7. Spelbar MVP i webben (M) – klart
 
 **Mål:** från skelett till något man kan ge till en testspelare.
 

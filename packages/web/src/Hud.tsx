@@ -29,6 +29,7 @@ interface HudProps {
   onCancel(): void;
   onEndTurn(): void;
   onRestart(): void;
+  onDownloadReplay(): void;
 }
 
 const teamColor = (team: number) => TEAM_COLOR[team % TEAM_COLOR.length];
@@ -135,7 +136,7 @@ export function Hud(props: HudProps) {
             : myTurn
               ? props.mode
                 ? `${ABILITIES[props.mode].name}: pick a highlighted tile. Esc cancels.`
-                : "Blue tiles: move. Red: attack. Or pick an ability. E ends the turn."
+                : "Blue tiles: move. Red: attack. Or pick an ability. E ends the turn, ←/→ rotate."
               : activeUnit && localTeams.includes(activeUnit.team)
                 ? "…"
                 : "Opponent's turn"}
@@ -240,9 +241,15 @@ export function Hud(props: HudProps) {
         <div className="result">
           <div className="panel">
             <h1>{resultText(state, localTeams)}</h1>
-            <button type="button" onClick={props.onRestart}>
-              Play again
-            </button>
+            <p className="summary">Round {state.round}</p>
+            <div className="buttons">
+              <button type="button" onClick={props.onRestart}>
+                Play again
+              </button>
+              <button type="button" className="secondary" onClick={props.onDownloadReplay}>
+                Download replay
+              </button>
+            </div>
           </div>
         </div>
       )}

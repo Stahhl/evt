@@ -210,6 +210,8 @@ Den giriga botten använder inte isvägg. Värdet av en vägg märks först sena
 | girig mot girig | 50/50 mellan bottarna, men **lag 0 vinner bara 1 %** | 4–7, snitt 4,9 |
 | slump mot slump | 35 % mot 43 %, 23 % oavgjort | 12–30, snitt 24 |
 
+På `highlands` (100 partier): girig vinner mot slump i alla partier. Mellan giriga bottar vinner **lag 0 78 %**, och partierna tar 5–9 rundor. Fördelen går alltså åt andra hållet än på `skirmish`, och den är mindre. Spelaren är lag 0 i webben, så MVP:n blir förlåtande.
+
 **Vad mätningen säger:**
 - Partier mellan girig och girig tar slut på 4–7 rundor. Båda sidor går rakt fram och slår till så fort de kan.
 - Att agera **efter** motståndaren är en stor fördel på `skirmish`. Med turordningen c C b B a A går lag 0:s enhet in i räckhåll först, och lag 1:s motsvarande enhet slår till direkt. Det motsäger antagandet i B1 att utplaceringsordningen gynnar den som placeras först. Det är en följd av kartan och turordningen tillsammans och bör ses över (se öppna frågor).
@@ -256,6 +258,7 @@ a  .  .  B
 
 | Karta | Storlek | Lag | Idé |
 |---|---|---|---|
+| `highlands` (standard) | 10×10 | 4 mot 4: samma tre som på `skirmish` plus en väktare utan förmågor (150 hp, 30 i anfall, förflyttning 3, initiativ 8) | Punktsymmetrisk. Varje lag startar på ett upphöjt hörn. En platå på 2×2 i mitten, högplatåer i de två andra hörnen, och vatten och pelare som bryter vägarna |
 | `skirmish` | 8×8 | 3 mot 3: riddare med eldklot (120 hp, 35 i anfall), bågskytt med isvägg och snabbfrysning (80 hp, räckvidd 4, initiativ 12), spejare med kedjeblixt (förflyttning 5, hopphöjd 2, initiativ 14) | Punktsymmetrisk så att ingen sida har bättre mark. En platå i mitten nås via en ramp från varje sida. Pelare och vatten bryter siktlinjer |
 
 Alla inbyggda kartor testas för att vara punktsymmetriska, både terräng och enheter.
@@ -269,11 +272,14 @@ Hur en tur spelas i webbklienten. Det är också preliminärt.
 - Röda rutor visar fiender som kan anfallas. **Ett anfall kräver bekräftelse**: klicket öppnar en förhandsvisning (hp före och efter, och vem som dör), och först "Confirm" utför anfallet. Esc avbryter.
 - Förmågor väljs med knapparna eller sifferknapparna `1`, `2` och så vidare. Möjliga mål blir lila, och det område förmågan skulle träffa blir gult när man håller muspekaren över ett mål. Klicket öppnar en förhandsvisning, precis som för anfall.
 - `E` eller knappen "End turn" avslutar turen.
+- Piltangenterna vänster och höger, eller knapparna ⟲ ⟳, vrider kameran ett kvarts varv. Så kommer man åt rutor som skyms.
+- `T` eller knappen "Threat" visar **hotvyn**: rutor som någon fiende kan träffa nästa tur, efter att ha gått dit den kan gå. Den räknar med siktlinje från varje ruta fienden kan stå på, men lägger till områdets radie direkt till räckvidden, så den kan överskatta bakom väggar. Hotvyn är ett hjälpmedel och ingen regel (`threatenedTiles` i motorn).
+- Verktygsraden har kartval, nytt parti och "Replay ⤓", som laddar ned partiet som JSON. Filen går att verifiera och spela upp med `pnpm evt replay`.
 - Motståndarens drag spelas upp som animationer i tur och ordning, med en kort paus före varje botdrag.
 
 **Varför:** en förflyttning går inte att ångra, men konsekvensen syns redan i markeringen och vägen. Ett anfall är svårare att förutse, så det får en förhandsvisning. Färre klick för det vanligaste draget.
 
-**Att se över:** ångra förflyttning innan handlingen är gjord, och kamerarotation för rutor som skyms (steg 7).
+**Att se över:** ångra förflyttning innan handlingen är gjord, röntgensilhuetter för enheter bakom höga block, och om hotvyn ska skilja på anfall och förmågor.
 
 ## Öppna frågor
 
@@ -298,3 +304,4 @@ Hur en tur spelas i webbklienten. Det är också preliminärt.
 | 2026-10-14 | B8 rundgräns (30, sedan oavgjort). Döda enheter lämnar turordningen direkt. `stats:` i textformatet och kartan `skirmish` |
 | 2026-10-14 | B9 förmågor, B10 ytor och reaktioner, B11 frysning, B12 undvika i ånga. Förhandsvisningen visar alla utfall med sannolikhet. Regelversion v1 |
 | 2026-10-14 | Girig bot, `evt sim` och nattliga balanskörningar. Första mätningen visar en stor fördel för den som agerar efter motståndaren |
+| 2026-10-14 | Kartan `highlands` (10×10, 4 mot 4) blir standard. Kamerarotation, hotvy och nedladdning av replay i webben |

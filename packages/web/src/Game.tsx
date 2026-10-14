@@ -11,6 +11,7 @@ import {
   parseScenario,
   preview,
   readyAbilities,
+  threatenedTiles,
 } from "@evt/engine";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BoardView, type Highlight } from "./board/BoardView.ts";
@@ -20,7 +21,13 @@ import { Hud } from "./Hud.tsx";
 import type { HostUpdate } from "./host/GameHost.ts";
 import { LocalHost } from "./host/LocalHost.ts";
 
-export function Game({ seed, onRestart }: { seed: number; onRestart: () => void }) {
+interface GameProps {
+  seed: number;
+  map: string;
+  onNewGame: (map: string) => void;
+}
+
+export function Game({ seed, map, onNewGame }: GameProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [host, setHost] = useState<LocalHost | null>(null);
   const [board, setBoard] = useState<BoardView | null>(null);
@@ -32,6 +39,7 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
   const [pending, setPending] = useState<Action | null>(null);
   /** The ability the player is aiming, if any. */
   const [mode, setMode] = useState<AbilityId | null>(null);
+  const [showThreat, setShowThreat] = useState(false);
   const [log, setLog] = useState<string[]>([]);
   const clickRef = useRef<(pos: Pos) => void>(() => {});
 
@@ -39,7 +47,7 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
     const container = containerRef.current;
     if (!container) return;
     const h = new LocalHost({
-      setup: { ...parseScenario(MAPS.skirmish as string), seed },
+      setup: { ...parseScenario(MAPS[map] as string), seed },
       bots: { 1: greedyBot(seed + 1) },
     });
     const b = new BoardView(container, h.state, {
@@ -82,7 +90,7 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
       h.dispose();
       b.dispose();
     };
-  }, [seed]);
+  }, [seed, map]);
 
   const active = view ? activeUnit(view) : undefined;
   const myTurn =
@@ -137,6 +145,9 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") cancel();
+      if (e.key === "ArrowLeft") board?.rotate(-1);
+      if (e.key === "ArrowRight") board?.rotate(1);
+      if (e.key === "t" || e.key === "T") setShowThreat((v) => !v);
       const index = Number(e.key) - 1;
       const ability = active?.abilities[index];
       if (myTurn && ability && ready.includes(ability)) {
@@ -154,6 +165,15 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
   useEffect(() => {
     if (!board || !view) return;
     const highlights = new Map<string, Highlight>();
+    if (showThreat && host) {
+      const team = host.localTeams[0] ?? 0;
+      for (const index of threatenedTiles(view, team).keys()) {
+        highlights.set(
+          posKey({ x: index % view.map.cols, y: Math.floor(index / view.map.cols) }),
+          "threat",
+        );
+      }
+    }
     const aimed = pending?.type === "ability" ? pending : null;
     const aiming = aimed?.ability ?? mode;
     if (aiming) {
@@ -176,10 +196,70 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
     }
     if (active && myTurn) highlights.set(posKey(active), "active");
     board.setHighlights(highlights);
-  }, [board, view, options, hover, pending, mode, active, myTurn]);
+  }, [board, view, host, options, hover, pending, mode, active, myTurn, showThreat]);
+
+  const downloadReplay = () => {
+    if (!host) return;
+    const blob = new Blob([`${JSON.stringify(host.replay, null, 2)}\n`], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `evt-${map}-${seed}-${host.replay.actions.length}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="game">
+      <nav className="panel toolbar">
+        <label>
+          Map{" "}
+          <select value={map} onChange={(e) => onNewGame(e.target.value)}>
+            {Object.keys(MAPS).map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button type="button" className="secondary" onClick={() => onNewGame(map)}>
+          New game
+        </button>
+        <button
+          type="button"
+          className="secondary"
+          title="Rotate left (←)"
+          onClick={() => board?.rotate(-1)}
+        >
+          ⟲
+        </button>
+        <button
+          type="button"
+          className="secondary"
+          title="Rotate right (→)"
+          onClick={() => board?.rotate(1)}
+        >
+          ⟳
+        </button>
+        <button
+          type="button"
+          className={`secondary ${showThreat ? "on" : ""}`}
+          title="Tiles the enemy can hit next turn (T)"
+          onClick={() => setShowThreat((v) => !v)}
+        >
+          Threat (T)
+        </button>
+        <button
+          type="button"
+          className="secondary"
+          title="Save this match as a replay file"
+          onClick={downloadReplay}
+        >
+          Replay ⤓
+        </button>
+      </nav>
       <div className="board" ref={containerRef} />
       {view && host && (
         <Hud
@@ -200,7 +280,8 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
           onConfirm={() => pending && submit(pending)}
           onCancel={cancel}
           onEndTurn={() => active && submit({ type: "endTurn", unit: active.id })}
-          onRestart={onRestart}
+          onRestart={() => onNewGame(map)}
+          onDownloadReplay={downloadReplay}
         />
       )}
     </div>

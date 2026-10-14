@@ -26,13 +26,14 @@ const TERRAIN_COLOR: Record<Tile["terrain"], number> = {
 };
 export const TEAM_COLOR = ["#3f7fe0", "#e0503f"] as const;
 
-export type Highlight = "move" | "path" | "attack" | "ability" | "target" | "active";
+export type Highlight = "threat" | "move" | "path" | "attack" | "ability" | "target" | "active";
 const HIGHLIGHT_COLOR: Record<Highlight, number> = {
   move: 0x7fd7ff,
   path: 0xffffff,
   attack: 0xff6a4d,
   ability: 0xc792ff,
   target: 0xffd23f,
+  threat: 0xff3030,
   active: 0xffe680,
 };
 
@@ -73,6 +74,10 @@ export class BoardView {
   #tweens: Tween[] = [];
   #state: MatchState;
   #hovered: string | null = null;
+  /** Camera angle around the board; a quarter turn per rotation step. */
+  #angle = 0;
+  #targetAngle = 0;
+  #rotations = 0;
   #pointerDown: { x: number; y: number } | null = null;
 
   constructor(container: HTMLElement, state: MatchState, callbacks: BoardCallbacks) {
@@ -137,7 +142,7 @@ export class BoardView {
       overlay.visible = h !== undefined;
       if (h) {
         overlay.material.color.setHex(HIGHLIGHT_COLOR[h]);
-        overlay.material.opacity = h === "move" ? 0.35 : 0.6;
+        overlay.material.opacity = h === "move" ? 0.35 : h === "threat" ? 0.28 : 0.6;
       }
     }
   }
@@ -341,20 +346,48 @@ export class BoardView {
     if (w === 0 || h === 0) return;
     this.#renderer.setSize(w, h);
     const { cols, rows } = this.#state.map;
-    // Isometric-style view from the corner behind team 0, which starts at the
-    // low x/y corner of the maps. Rotation comes in step 7.
     const size = Math.max(cols, rows);
+    // Fit the board seen from a corner: it is about √2·size wide and a bit
+    // less tall. Whichever side is the tighter fit decides the zoom.
     const aspect = w / h;
-    const half = size * 0.62;
-    this.#camera.left = -half * Math.max(aspect, 1);
-    this.#camera.right = half * Math.max(aspect, 1);
-    this.#camera.top = half / Math.min(aspect, 1);
-    this.#camera.bottom = -half / Math.min(aspect, 1);
+    const halfWidth = size * 0.75;
+    const halfHeight = size * 0.7;
+    const top = aspect >= halfWidth / halfHeight ? halfHeight : halfWidth / aspect;
+    this.#camera.left = -top * aspect;
+    this.#camera.right = top * aspect;
+    this.#camera.top = top;
+    this.#camera.bottom = -top;
     this.#camera.near = 0.1;
     this.#camera.far = 200;
-    this.#camera.position.set(-size, size * 1.1, -size);
-    this.#camera.lookAt(0, 0, 0);
     this.#camera.updateProjectionMatrix();
+    this.#placeCamera();
+  }
+
+  /**
+   * Isometric-style view from a corner. Angle 0 looks from behind team 0,
+   * which starts at the low x/y corner of the maps.
+   */
+  #placeCamera(): void {
+    const size = Math.max(this.#state.map.cols, this.#state.map.rows);
+    const a = this.#angle;
+    const x = -Math.cos(a) + Math.sin(a);
+    const z = -Math.sin(a) - Math.cos(a);
+    this.#camera.position.set(x * size, size * 1.1, z * size);
+    this.#camera.lookAt(0, 0, 0);
+  }
+
+  /** Turns the view a quarter turn: 1 clockwise, -1 counter-clockwise. */
+  rotate(direction: 1 | -1): void {
+    const from = this.#angle;
+    this.#targetAngle += (direction * Math.PI) / 2;
+    const to = this.#targetAngle;
+    const turn = ++this.#rotations;
+    void this.#tween(300, (t) => {
+      if (turn !== this.#rotations) return; // a newer rotation took over
+      const eased = t * t * (3 - 2 * t);
+      this.#angle = from + (to - from) * eased;
+      this.#placeCamera();
+    });
   }
 
   #pick(event: PointerEvent): Pos | null {

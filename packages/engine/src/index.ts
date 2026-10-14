@@ -10,7 +10,7 @@ export {
 export { parseScenario } from "./ascii.ts";
 export { dodgeChance } from "./effects.ts";
 export { canonicalize, hashState } from "./hash.ts";
-export { area, distance, hasWall, inBounds, isStandable, tileAt } from "./map.ts";
+export { area, distance, hasWall, inBounds, isStandable, posIndex, tileAt } from "./map.ts";
 export { MAPS } from "./maps.ts";
 export {
   abilityTargets,
@@ -44,6 +44,7 @@ export {
   seedRng,
 } from "./rng.ts";
 export { hasLineOfSight, PILLAR_HEIGHT } from "./sight.ts";
+export { threatenedTiles } from "./threat.ts";
 export type {
   AbilityId,
   Action,
