@@ -1,6 +1,7 @@
 export { parseScenario } from "./ascii.ts";
 export { canonicalize, hashState } from "./hash.ts";
 export { inBounds, isStandable, tileAt } from "./map.ts";
+export { MAPS } from "./maps.ts";
 export {
   activeUnit,
   apply,
@@ -8,6 +9,7 @@ export {
   attackTargets,
   checkAction,
   createMatch,
+  DEFAULT_MAX_ROUNDS,
   DEFAULT_STATS,
   HEIGHT_BONUS_CAP,
   HEIGHT_BONUS_PERCENT,
@@ -20,6 +22,7 @@ export {
   unitAt,
 } from "./match.ts";
 export { MOVE_COST, reachableTiles } from "./movement.ts";
+export { type Replay, type ReplayCheck, ReplayRecorder, verifyReplay } from "./replay.ts";
 export {
   nextUint32,
   type RngState,
@@ -42,5 +45,4 @@ export type {
   UnitStats,
 } from "./types.ts";
 
-/** Bumped for every change that can alter the outcome of a recorded match. */
-export const RULES_VERSION = "v0";
+export { RULES_VERSION } from "./version.ts";

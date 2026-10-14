@@ -52,7 +52,7 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Klart när:** scenariotester för vägsökning (höjd, blockering), siktlinje (bakom pelare, uppför) och ett anfall som dödar en enhet är gröna.
 
-### 3. Headless spel och replay (M)
+### 3. Headless spel och replay (M) – klart
 
 **Mål:** ett helt parti kan spelas och spelas upp i terminalen.
 

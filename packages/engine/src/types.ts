@@ -55,6 +55,8 @@ export interface MatchState {
   /** In setup order, which breaks initiative ties. */
   readonly units: readonly Unit[];
   readonly round: number;
+  /** The match is a draw if it is still running when this round ends. */
+  readonly maxRounds: number;
   /** Units that still act this round. The first one is the active unit. */
   readonly queue: readonly string[];
   /** What the active unit has done this turn. */

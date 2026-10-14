@@ -21,6 +21,26 @@ describe("parseScenario", () => {
     ]);
   });
 
+  it("reads per-unit stats", () => {
+    const { units } = parseScenario(`
+      map:
+      1g 1g
+      units:
+      a  B
+      stats:
+      B  range=4 attack=20
+    `);
+    expect(units[1]).toEqual({ id: "B", team: 1, x: 1, y: 0, range: 4, attack: 20 });
+  });
+
+  it.each([
+    ["an unknown unit", "x range=4"],
+    ["an unknown stat", "a speed=4"],
+    ["a malformed stat", "a range=far"],
+  ])("rejects stats for %s", (_, line) => {
+    expect(() => parseScenario(`map:\n1g 1g\nunits:\na B\nstats:\n${line}`)).toThrow(SyntaxError);
+  });
+
   it("allows a map without units", () => {
     expect(parseScenario("map:\n1g 1g").units).toEqual([]);
   });

@@ -1,0 +1,2467 @@
+{
+  "rulesVersion": "v0",
+  "setup": {
+    "map": {
+      "cols": 8,
+      "rows": 8,
+      "tiles": [
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": "pillar"
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null
+        },
+        {
+          "height": 3,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 3,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 3,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 3,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null
+        },
+        {
+          "height": 0,
+          "terrain": "water",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": "pillar"
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 1,
+          "terrain": "grass",
+          "object": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null
+        },
+        {
+          "height": 2,
+          "terrain": "stone",
+          "object": null
+        }
+      ]
+    },
+    "units": [
+      {
+        "id": "a",
+        "team": 0,
+        "x": 1,
+        "y": 0,
+        "maxHp": 120,
+        "attack": 35
+      },
+      {
+        "id": "c",
+        "team": 0,
+        "x": 2,
+        "y": 0,
+        "move": 5,
+        "jump": 2,
+        "attack": 25,
+        "initiative": 14
+      },
+      {
+        "id": "b",
+        "team": 0,
+        "x": 0,
+        "y": 1,
+        "maxHp": 80,
+        "attack": 20,
+        "range": 4,
+        "initiative": 12
+      },
+      {
+        "id": "B",
+        "team": 1,
+        "x": 7,
+        "y": 6,
+        "maxHp": 80,
+        "attack": 20,
+        "range": 4,
+        "initiative": 12
+      },
+      {
+        "id": "C",
+        "team": 1,
+        "x": 5,
+        "y": 7,
+        "move": 5,
+        "jump": 2,
+        "attack": 25,
+        "initiative": 14
+      },
+      {
+        "id": "A",
+        "team": 1,
+        "x": 6,
+        "y": 7,
+        "maxHp": 120,
+        "attack": 35
+      }
+    ],
+    "seed": 1
+  },
+  "actions": [
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 1,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 7,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 2,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 7,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 5,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 5,
+        "y": 6
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 0,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 6,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 0,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 7,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 6,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 7,
+        "y": 6
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 1,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 0,
+        "y": 4
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 1,
+        "y": 7
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 7,
+        "y": 0
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "B",
+      "target": {
+        "x": 6,
+        "y": 1
+      }
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 7,
+        "y": 2
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 7,
+        "y": 3
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "A",
+      "target": {
+        "x": 7,
+        "y": 2
+      }
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 3,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 3,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 4,
+        "y": 4
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 3,
+        "y": 5
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 6,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 7,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 3,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 0,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 0,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 7,
+        "y": 1
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "B",
+      "target": {
+        "x": 7,
+        "y": 4
+      }
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 5,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 2,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 1,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 0,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 3,
+        "y": 4
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 2,
+        "y": 4
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 4,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 3,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 1,
+        "y": 6
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "A",
+      "target": {
+        "x": 1,
+        "y": 5
+      }
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 1,
+        "y": 2
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 1,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 1,
+        "y": 4
+      }
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 6,
+        "y": 3
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 5,
+        "y": 3
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "B",
+      "target": {
+        "x": 6,
+        "y": 3
+      }
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 2,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 0,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 3,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 2,
+        "y": 0
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "C",
+      "target": {
+        "x": 3,
+        "y": 0
+      }
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 5,
+        "y": 2
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 5,
+        "y": 3
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "B",
+      "target": {
+        "x": 5,
+        "y": 2
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 6,
+        "y": 5
+      }
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 1,
+        "y": 2
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 7,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 1,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 3,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 0,
+        "y": 2
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 3,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 2,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 6,
+        "y": 3
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 6,
+        "y": 5
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "B",
+      "target": {
+        "x": 6,
+        "y": 3
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 4,
+        "y": 7
+      }
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 0,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 1,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 5,
+        "y": 2
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 0,
+        "y": 4
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "C",
+      "target": {
+        "x": 0,
+        "y": 5
+      }
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 6,
+        "y": 2
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 2,
+        "y": 6
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 3,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 5,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 3,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 4,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 5,
+        "y": 6
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 1,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 2,
+        "y": 6
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 7,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "C",
+      "to": {
+        "x": 2,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "C"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 7,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 2,
+        "y": 4
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "a",
+      "target": {
+        "x": 2,
+        "y": 5
+      }
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 1,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 6,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "attack",
+      "unit": "B",
+      "target": {
+        "x": 6,
+        "y": 4
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 6,
+        "y": 2
+      }
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 1,
+        "y": 6
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 6,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 2,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 7,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "a",
+      "to": {
+        "x": 2,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "a"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 0,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 5,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 1,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 5,
+        "y": 6
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "B",
+      "target": {
+        "x": 2,
+        "y": 7
+      }
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 0,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 6,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 2,
+        "y": 1
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 0,
+        "y": 1
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 6,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 0,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 4,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 3,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 4,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 2,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 2,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 5,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 4,
+        "y": 6
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 3,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 1,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 5,
+        "y": 2
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 2,
+        "y": 6
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 0,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 7,
+        "y": 2
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 2,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 3,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 0,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 4,
+        "y": 3
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 3,
+        "y": 4
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 1,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 1,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 0,
+        "y": 2
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 4,
+        "y": 2
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 0,
+        "y": 6
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "B",
+      "target": {
+        "x": 0,
+        "y": 2
+      }
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 1,
+        "y": 5
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 1,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 5,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 1,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 1,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 4,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 4,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 4,
+        "y": 6
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 0,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 0,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 5,
+        "y": 3
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "b",
+      "target": {
+        "x": 4,
+        "y": 6
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 1,
+        "y": 7
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 0,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 4,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 2,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "c",
+      "to": {
+        "x": 0,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "c"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 6,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "attack",
+      "unit": "B",
+      "target": {
+        "x": 0,
+        "y": 4
+      }
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 5,
+        "y": 3
+      }
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 7,
+        "y": 6
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 3,
+        "y": 4
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "B"
+    },
+    {
+      "type": "move",
+      "unit": "A",
+      "to": {
+        "x": 0,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "A"
+    },
+    {
+      "type": "move",
+      "unit": "b",
+      "to": {
+        "x": 7,
+        "y": 3
+      }
+    },
+    {
+      "type": "endTurn",
+      "unit": "b"
+    },
+    {
+      "type": "move",
+      "unit": "B",
+      "to": {
+        "x": 5,
+        "y": 3
+      }
+    },
+    {
+      "type": "attack",
+      "unit": "B",
+      "target": {
+        "x": 7,
+        "y": 3
+      }
+    }
+  ],
+  "hashes": [
+    "be0f1d6a9f1a8575",
+    "f534c66365b53bf9",
+    "cd236d372e6721a5",
+    "d8d0c4d584f9d566",
+    "eaba03090070a342",
+    "b94380d6c1726acb",
+    "6227cea6d8d9ae4e",
+    "27b1a6b6ce9878c4",
+    "3b8318b11f330c31",
+    "d096939648a1d50e",
+    "fdf4f35e0765ede0",
+    "f8a87587384671c1",
+    "77f0c6ebd52229fc",
+    "346a5b31dad7a4bf",
+    "c1379bea333afdfb",
+    "16eb453b5d19850b",
+    "3640935d7fa38f17",
+    "03a8867ea93f47b4",
+    "2d19dd1237bbb6e9",
+    "9735300cf0442fce",
+    "70ca53be4fa579f3",
+    "119ada547ba0fa52",
+    "f62f82cad6388344",
+    "7e2be88905ce110d",
+    "444b7f09b540d3fa",
+    "0580e2969eeff294",
+    "62241c8089915f88",
+    "40f32d666f244cc4",
+    "5fa00cb892bb2230",
+    "9becc6160d9d22b4",
+    "3731ed1ac085ec08",
+    "a0697dce9ea936d0",
+    "430623c51ebfc82f",
+    "93d75bbc15eb36fe",
+    "e93cb6df47b77d80",
+    "85310b7ea6493bbe",
+    "6848b05fd6b9dadd",
+    "ee9cf6247d023fcc",
+    "9dd816d996de6038",
+    "46bfbe07f28f5ee3",
+    "41da6dd559dac48f",
+    "1d7e8ac4a09a5088",
+    "1dc467e9e488431e",
+    "fb83e8d3711e6084",
+    "5502f4d9e1588e39",
+    "efaa9daed99ab88c",
+    "424b5b7528b55cca",
+    "c7d2a0768db35705",
+    "7f5c3ac3de07cc42",
+    "d3021d4a68195f00",
+    "df23a7099c55bd2c",
+    "657ca0c4dc7e7094",
+    "cd732a1edf3ebd50",
+    "17c7745570f7ef0e",
+    "c357c412485ed4a5",
+    "1cd042fb3d8a1272",
+    "ae7aeb60bed9cf5c",
+    "093025ac12b94d12",
+    "3fe9a2a753134b27",
+    "71b8ca7b9be488ea",
+    "4577645f86ad6d96",
+    "d83d6c2130fc69f2",
+    "6800ac4a4711de2b",
+    "dbacba5d1b348a37",
+    "e21546f54386a413",
+    "c3a419e8618ed8ec",
+    "4317d1bdaef57425",
+    "d799c965910a8170",
+    "37c097447afa976d",
+    "e38cf659c989c52b",
+    "e050b3a224150619",
+    "e0b99dae8c6ff3e0",
+    "bb47a66a0887d86c",
+    "3cd829aad0812830",
+    "36aadccb28a583b1",
+    "620e141035a2cd85",
+    "c576c16fe4f6d64c",
+    "065b77bca584ec7b",
+    "b4530ea4d8c68502",
+    "20d69971763272ea",
+    "5a700aa2e4123677",
+    "5b1b3a32271ea969",
+    "8311aad4f426fcfe",
+    "d049dcd9250aa9df",
+    "f8b364d15f35a78c",
+    "0596c494c3331478",
+    "585ced69f821b724",
+    "eba54942a65ad3a7",
+    "eefe3e55dcb2ccb6",
+    "5ccc6d6f8fa36127",
+    "1c5d175fb368eadc",
+    "ac758eecd31de614",
+    "93e834899b8ce1e2",
+    "5b72531770589a24",
+    "9ef1e6ef8c8c0cbc",
+    "d1b770b5b092ab0b",
+    "62f63939d5b6c2c5",
+    "ada4d8b4b3e50329",
+    "98497493e54a41a9",
+    "d4d6b6d7fbf2ce6d",
+    "9235906d31d917f6",
+    "0b38c7b834ea5533",
+    "f05a65650852a38d",
+    "5fcd45a8b4b513e8",
+    "ffd472494d649829",
+    "ff9bd9a9fd8d2f7f",
+    "6f22a15fe8ab7f31",
+    "ad0e5bbddc22a815",
+    "fe2cd1b3d68b9fa4",
+    "39aac242540874b8",
+    "cbe64d01c7979e41",
+    "c0f1f192438f8e46",
+    "4b4b78946745599f",
+    "c7d38b47250928aa",
+    "1747e0250b5149a7",
+    "b4dccc1fa2e84f21",
+    "839b370e40d6ac84",
+    "a6fb30f320908933",
+    "b9f2522f4e551b64",
+    "76db2b351416a568",
+    "f2f89bf338758ac4",
+    "576c6dea0458de93",
+    "22be2c6a6a1d2f79",
+    "cbfd101e790af864",
+    "9131b9f34894365a",
+    "35cd5179ba7b7618",
+    "1124133fe30135c6",
+    "5bad575a90813b59",
+    "85ba682c912154d4",
+    "c8e31258ab3bfd5d",
+    "4ff90960490d23a9",
+    "9504e35a692c5f19",
+    "18da36f0d558ad65",
+    "982e6686af19d24e",
+    "5880ead71355716b",
+    "69bb4ae4e3f785a0",
+    "b9496459cbc97bb5",
+    "4d37f688f17ef6cf",
+    "8671572f5723d879",
+    "82f4f224e5c767de",
+    "f58c423934118509",
+    "326c187211da7218",
+    "4a5be994d71daff4",
+    "d5b31f2d2895dc1f",
+    "f43d556de4fa377b",
+    "30acb6a72997056c",
+    "d58f7cdc66d65141",
+    "a2e243fd5aa3a983",
+    "d7bcbec6bba8e14e",
+    "6b8e7d0ca339e0ee",
+    "a212bcea29c60939",
+    "c6235eed0d68023a",
+    "e673a37b7d2cfacc",
+    "efdbbd0c1482ca7a",
+    "8f6d7ed0ebc50b56",
+    "ca76c8cf948d41b5",
+    "458a1940d7fb8af8",
+    "f8f75b427811a22d",
+    "2abdc163584aef26",
+    "94755f65d637f25c",
+    "9f50795467cb172a",
+    "22ae17256c4b2b69",
+    "01e753b515028687",
+    "0109e1c44a202713",
+    "131d0a25eb7451aa",
+    "32c86e4cab70b57f",
+    "c18c3a14c1551c62",
+    "b4c752b22e581ce7",
+    "a0e89a78b1c35f6e",
+    "6208421ca5538560",
+    "d223d58fed946802",
+    "8b1f7c163261d600",
+    "42dc2cad440c7e50",
+    "d5dcc53624dfe73c",
+    "cbd101d02a3648bf",
+    "00d02c9bd187d742",
+    "397fdbb308ab1a68",
+    "accac7e7ed942332",
+    "6f11deaa9759c025",
+    "7d922ebe2f31bbd0",
+    "746064d2fd10ad4a",
+    "77eba9cfbcd31c96",
+    "864befb72cba475c",
+    "9e911fbaeb127588",
+    "d582aeea86897793",
+    "1fc57f70545577f6",
+    "83c50e43c8182f69",
+    "c74627088878cada",
+    "c9583e22f4d5aff3",
+    "02c8f70ffd000c77",
+    "adfd0e468c517034",
+    "8ffe0cf9a6e8abd9",
+    "68fd4fa1fc90478a",
+    "7f4185ca352fce27",
+    "25a9fe8e47ab3c77",
+    "9966a91c2d74e9e2",
+    "f358bdb24b01cae1",
+    "02fa965793ea113d",
+    "23950ebf6c142c61",
+    "63afc48d9bbf39a4",
+    "cd67fabec4229c76",
+    "a051cf5f047af253",
+    "9457395d0d3bae6e",
+    "af6414ddabd93e88",
+    "be7aa503f2f2c210",
+    "3375804808b1b4cc",
+    "144240ad93327514",
+    "3801925a4e60b971",
+    "bef9d9185a1a312f",
+    "cc1353b976facc00",
+    "f8283f3f8e787c2d",
+    "7b877ba7fcb4fe76",
+    "10ca98e2a87797f2",
+    "a6ec77baf37f0593",
+    "f904ba0a3bd4e7de",
+    "9cdd62d11b2a1ca2",
+    "07e3ab17a745bbef",
+    "8278093cf870370f",
+    "d71948a6998675f8",
+    "32eb927aabf5f392",
+    "13f22892f1aa6d7e",
+    "26cbc2eb19a8bd47",
+    "3af439be583b194c",
+    "13dfed54bb75f6ec",
+    "32061e55aa83c9c9",
+    "82a5995b9d440910",
+    "301a8075ad8951bd",
+    "d60a12141052fff9",
+    "ebf73fcaf9461d6d",
+    "9371559dd1bde3bf",
+    "0f62606491a0e192",
+    "82ed6716f4a976e1",
+    "9c7e62e95637d61e",
+    "afdc6bfaf1753164",
+    "c4ced8db3aa0b95f",
+    "7026979c91fa0e3f",
+    "6778516d848b7663",
+    "2482802a58c49442",
+    "f0699d6960f3b97f",
+    "f4cfe6a3d0a09c1c",
+    "59c369e14c755541",
+    "688cf6411c1474b4",
+    "4e0c1a0739c62141",
+    "237da3f6bd51f78f",
+    "83cdc68250641e8b",
+    "9206039311675d03",
+    "6408963729744836",
+    "8fc7de5b74f06239",
+    "5a5a33ba8f04f8fc",
+    "042b33601a867946",
+    "863e128a2556c769",
+    "6f82d9fd358ca45f",
+    "58d83567e7870153",
+    "c45c22b28aaecd91",
+    "e7c325326edb47e8",
+    "1525b6d3649661df",
+    "f248e45636c4dcf2",
+    "d2bdb096f076db16",
+    "f37bb2cf9655ccf3",
+    "1128fa2d145d8ea9",
+    "95f0438781be223d",
+    "697e6c43db5d0050",
+    "b385dce9db2219f5",
+    "987da96673458cae",
+    "362c365fce97407b",
+    "c339e74294315024",
+    "697c89851fc487b7",
+    "228549592aa28d18",
+    "c8d9954a7626d654",
+    "2aa886136707d7b2",
+    "da2472048dfc5b1f",
+    "d6e6433cd0a51648",
+    "19f48bc2f3461bd5",
+    "a0abab6be56c45f6",
+    "a18d29232ff21734",
+    "42a11ff81b0b2b4b",
+    "400eddd91f538a3e",
+    "bd5c41548c6f243c",
+    "256eff95e80c25e9",
+    "5470ffbd2cfc46b1",
+    "1d07ad06d379bcda",
+    "c709b9a155c20e34",
+    "f9b7a4fa60541e01",
+    "becef0b0b012e453",
+    "3843878ae22c406f"
+  ]
+}

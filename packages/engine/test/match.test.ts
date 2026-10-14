@@ -202,6 +202,32 @@ describe("apply", () => {
   });
 });
 
+describe("round limit", () => {
+  it("ends the match in a draw when the last round is over", () => {
+    const { map, units } = parseScenario(DUEL);
+    const state = createMatch({ map, units, seed: 1, maxRounds: 2 });
+    const lastTurn = play(
+      state,
+      { type: "endTurn", unit: "a" },
+      { type: "endTurn", unit: "B" },
+      { type: "endTurn", unit: "a" },
+    );
+    expect(lastTurn.round).toBe(2);
+    const { state: next, events } = apply(lastTurn, { type: "endTurn", unit: "B" });
+    expect(events).toEqual([
+      { type: "turnEnded", unit: "B" },
+      { type: "matchEnded", winner: null },
+    ]);
+    expect(next.result).toEqual({ winner: null });
+    expect(next.round).toBe(2);
+  });
+
+  it("must be a positive integer", () => {
+    const { map, units } = parseScenario(DUEL);
+    expect(() => createMatch({ map, units, seed: 1, maxRounds: 0 })).toThrow(RangeError);
+  });
+});
+
 describe("legalActions", () => {
   it("is empty for the team that is not active", () => {
     expect(legalActions(scenario(DUEL), 1)).toEqual([]);

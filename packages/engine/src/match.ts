@@ -35,7 +35,12 @@ export interface MatchSetup {
   /** Setup order breaks initiative ties. */
   readonly units: readonly UnitSetup[];
   readonly seed: number;
+  /** Defaults to DEFAULT_MAX_ROUNDS. */
+  readonly maxRounds?: number;
 }
+
+/** Ends matches that stall, e.g. between two random bots, as a draw. */
+export const DEFAULT_MAX_ROUNDS = 30;
 
 export class IllegalActionError extends Error {
   override name = "IllegalActionError";
@@ -64,11 +69,16 @@ export function createMatch(setup: MatchSetup): MatchState {
   if (new Set(units.map((u) => u.team)).size < 2) {
     throw new RangeError("a match needs at least two teams");
   }
+  const maxRounds = setup.maxRounds ?? DEFAULT_MAX_ROUNDS;
+  if (!Number.isInteger(maxRounds) || maxRounds < 1) {
+    throw new RangeError(`maxRounds must be a positive integer, got ${maxRounds}`);
+  }
 
   const state: MatchState = {
     map,
     units,
     round: 1,
+    maxRounds,
     queue: initiativeOrder(units),
     turn: { moved: false, acted: false },
     rng: seedRng(setup.seed),
@@ -187,6 +197,7 @@ export function apply(
       next = {
         ...next,
         units: next.units.map((u) => (u.id === target.id ? { ...u, hp } : u)),
+        queue: hp === 0 ? next.queue.filter((id) => id !== target.id) : next.queue,
         turn: { ...next.turn, acted: true },
       };
       events.push({ type: "attacked", unit: attacker.id, target: target.id, damage });
@@ -216,6 +227,10 @@ function endTurn(state: MatchState, events: GameEvent[]): MatchState {
   let queue = rest.filter((id) => aliveIds.has(id));
   let round = state.round;
   if (queue.length === 0) {
+    if (round === state.maxRounds) {
+      events.push({ type: "matchEnded", winner: null });
+      return { ...state, queue: [], result: { winner: null } };
+    }
     round++;
     queue = initiativeOrder(state.units);
     events.push({ type: "roundStarted", round });

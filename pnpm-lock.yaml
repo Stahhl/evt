@@ -182,10 +182,17 @@ importers:
         specifier: ^5.0.4
         version: 5.0.4(@types/node@26.6.5)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2))
 
-  packages/bots: {}
+  packages/bots:
+    dependencies:
+      '@evt/engine':
+        specifier: workspace:*
+        version: link:../engine
 
   packages/cli:
     dependencies:
+      '@evt/bots':
+        specifier: workspace:*
+        version: link:../bots
       '@evt/engine':
         specifier: workspace:*
         version: link:../engine

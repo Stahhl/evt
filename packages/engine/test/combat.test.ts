@@ -137,6 +137,7 @@ describe("death", () => {
       { type: "died", unit: "B" },
     ]);
     expect(hp(afterKill, "B")).toBe(0);
+    expect(afterKill.queue).not.toContain("B");
     expect(afterKill.result).toBeNull();
 
     const next = play(afterKill, { type: "endTurn", unit: "a" });

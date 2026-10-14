@@ -17,7 +17,7 @@ Turbaserad taktik på ett voxelbräde. Två lag med några enheter var. Elementf
 En runda består av att varje levande enhet gör en tur, en i taget. Ordningen bestäms av initiativ: högst först. Lag blandas, så en fiende kan agera mellan två av dina enheter.
 
 - Ordningen räknas fram när rundan börjar. Ändras initiativ mitt i rundan, till exempel av en buff, gäller det från nästa runda.
-- En enhet som dör tas bort ur rundans ordning.
+- En enhet som dör tas bort ur rundans ordning direkt, inte först när turen är slut.
 - **Lika initiativ** avgörs av ordningen enheterna placerades ut i. Det är deterministiskt men gynnar den som placeras först (se öppna frågor).
 
 **Varför:**
@@ -109,6 +109,16 @@ En rak linje dras från mitten av anfallarens kropp till mitten av målets kropp
 
 **Följder att känna till:** på samma höjd blockerar en ruta som är ett block högre. Från höjden går det att skjuta över ett hinder om man står tillräckligt högt. Den som står nedanför en klippa ser inte någon som står längre in på klippan, bara den som står på kanten.
 
+### B8. Rundgräns
+
+Ett parti har en rundgräns, i dag 30 rundor. Är partiet inte avgjort när sista rundan är slut blir det oavgjort. Gränsen är en del av partiets data och kan sättas per karta eller parti.
+
+**Varför:**
+- Bottar, särskilt slumpbotten, kan annars spela i det oändliga. Balanskörningar och egenskapstester behöver partier som alltid tar slut.
+- Det ger ett tydligt slut även när två försiktiga spelare undviker varandra.
+
+**Att se över:** 30 är en gissning. Med tre enheter per lag och fyra träffar för att döda bör ett aktivt parti vara avgjort långt tidigare. Ett alternativ till oavgjort är att den som har mest kvarvarande hp vinner.
+
 ## Platshållarvärden
 
 | Värde | Nu | Kommentar |
@@ -139,7 +149,15 @@ a  .  .  B
 
 - En ruta är `<höjd><terräng>`, med ett valfritt `P` för pelare. Terräng är `s` (sten), `g` (gräs) eller `w` (vatten).
 - I `units:` är `.` en tom ruta och en bokstav en enhet med bokstaven som id. Liten bokstav är lag 0 och stor bokstav lag 1.
-- Enheternas värden sätts i koden, och standardvärdena ovan gäller om inget annat anges.
+- Ett valfritt avsnitt `stats:` sätter värden per enhet, en rad per enhet: `b  range=4 attack=20`. Värden som inte anges tar standardvärdena ovan.
+
+## Kartor
+
+| Karta | Storlek | Lag | Idé |
+|---|---|---|---|
+| `skirmish` | 8×8 | 3 mot 3: riddare (120 hp, 35 i anfall), bågskytt (80 hp, räckvidd 4, initiativ 12), spejare (förflyttning 5, hopphöjd 2, initiativ 14) | Punktsymmetrisk så att ingen sida har bättre mark. En platå i mitten nås via en ramp från varje sida. Pelare och vatten bryter siktlinjer |
+
+Alla inbyggda kartor testas för att vara punktsymmetriska, både terräng och enheter.
 
 ## Öppna frågor
 
@@ -151,7 +169,7 @@ a  .  .  B
 | Ska enheter blockera siktlinje? | B7 | Efter speltest |
 | Reaktionsmatris och siffror | Element | Steg 5 |
 | Vind: med i MVP:n eller inte? | Element | Steg 5 |
-| Rundgräns eller oavgjort efter N rundor, så att bottar inte kan dra ut på partiet? | B4 | Steg 3 |
+| Rätt rundgräns, och oavgjort eller seger på kvarvarande hp? | B8 | Efter bot-mot-bot-statistik |
 | Klasser (till exempel rogue) och hur de skiljer sig i värden och förmågor | Enheter | Efter MVP:n |
 
 ## Ändringslogg
@@ -160,3 +178,4 @@ a  .  .  B
 |---|---|
 | 2026-10-14 | Första utkast: B1–B5, platshållarvärden och textformat för kartor |
 | 2026-10-14 | B6 grundanfall med höjdbonus, B7 siktlinje. B3 har terrängkostnad i stället för fast stegkostnad |
+| 2026-10-14 | B8 rundgräns (30, sedan oavgjort). Döda enheter lämnar turordningen direkt. `stats:` i textformatet och kartan `skirmish` |
