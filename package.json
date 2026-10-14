@@ -1,0 +1,27 @@
+{
+  "name": "evt",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.8.1",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "biome check .",
+    "fix": "biome check --write .",
+    "check": "pnpm lint && pnpm typecheck && pnpm test",
+    "evt": "node packages/cli/src/main.ts",
+    "dev:web": "pnpm --filter @evt/web dev",
+    "dev:server": "pnpm --filter @evt/server dev"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@types/node": "^26.6.5",
+    "fast-check": "^4.10.2",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.4"
+  }
+}

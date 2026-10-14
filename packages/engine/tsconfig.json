@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Pure rules engine: ES standard library only. No DOM, no Node, so no I/O,
+    // timers or console. Date and Math.random are banned by test/purity.test.ts.
+    "lib": ["ES2023"],
+    "types": []
+  },
+  "include": ["src"]
+}

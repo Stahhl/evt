@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Runtime types come from worker-configuration.d.ts (pnpm cf-typegen).
+    "types": []
+  },
+  "include": ["src", "worker-configuration.d.ts"]
+}

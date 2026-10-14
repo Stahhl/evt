@@ -1,0 +1,15 @@
+{
+  "name": "@evt/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "evt": "./src/main.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@evt/engine": "workspace:*"
+  }
+}
