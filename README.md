@@ -35,9 +35,10 @@ The CLI runs on Node's built-in TypeScript support.
 | `pnpm test` / `pnpm test:watch` | Vitest across all packages |
 | `pnpm typecheck` | `tsc` per package |
 | `pnpm lint` / `pnpm fix` | Biome check / apply fixes and formatting |
-| `pnpm evt play` | Play the built-in `skirmish` map against a random bot in the terminal |
+| `pnpm evt play` | Play the built-in `skirmish` map against the greedy bot in the terminal |
 | `pnpm evt play --p1 bot:random --p2 bot:random --seed 1 --out r.json` | Bot vs bot, saving the replay |
 | `pnpm evt replay r.json` | Re-run a replay and check every state hash |
+| `pnpm evt sim --p1 bot:greedy --p2 bot:random -n 200` | Bot vs bot win rates; also runs nightly in the Balance workflow |
 | `pnpm evt maps` / `pnpm evt version` | List built-in maps / print the rules version |
 | `pnpm --filter @evt/server cf-typegen` | Regenerate Worker types after changing `wrangler.jsonc` |
 
@@ -50,6 +51,8 @@ If the change is a bug, fix it. If it is an intended rule change, bump `RULES_VE
 `packages/engine/src/version.ts` and record the golden replays again:
 
 ```bash
-pnpm evt play --p1 bot:random --p2 bot:random --seed 1 \
-  --out packages/engine/test/golden/skirmish-random-seed1.json
+g=packages/engine/test/golden
+pnpm evt play --p1 bot:random --p2 bot:random --seed 1 --out $g/skirmish-random-seed1.json
+pnpm evt play --p1 bot:greedy --p2 bot:random --seed 1 --out $g/skirmish-greedy-random-seed1.json
+pnpm evt play --p1 bot:greedy --p2 bot:greedy --seed 2 --out $g/skirmish-greedy-greedy-seed2.json
 ```

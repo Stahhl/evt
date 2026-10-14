@@ -1,5 +1,5 @@
 import { createInterface } from "node:readline/promises";
-import { randomBot } from "@evt/bots";
+import { BOTS } from "@evt/bots";
 import {
   ABILITIES,
   type Action,
@@ -17,18 +17,15 @@ export interface Player {
   close?(): void;
 }
 
+export const PLAYER_NAMES = ["human", ...Object.keys(BOTS).map((b) => `bot:${b}`)];
+
 /** "human" or "bot:<name>". Bots get their own seed derived from the match seed. */
 export function createPlayer(spec: string, seed: number): Player {
   if (spec === "human") return humanPlayer();
-  if (spec === "bot:random") {
-    const bot = randomBot(seed);
-    return {
-      name: "bot:random",
-      human: false,
-      chooseAction: async (s, t) => bot.chooseAction(s, t),
-    };
-  }
-  throw new Error(`unknown player "${spec}"; use human or bot:random`);
+  const make = spec.startsWith("bot:") ? BOTS[spec.slice(4)] : undefined;
+  if (!make) throw new Error(`unknown player "${spec}"; use one of ${PLAYER_NAMES.join(", ")}`);
+  const bot = make(seed);
+  return { name: spec, human: false, chooseAction: async (s, t) => bot.chooseAction(s, t) };
 }
 
 function describeAction(state: MatchState, action: Action): string {

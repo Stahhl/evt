@@ -189,6 +189,31 @@ Den som står i ånga har **50 % chans att undvika ett grundanfall**. Det är de
 
 **Varför:** slump ska gå att spåra till en källa och synas innan man väljer (se tech-stack.md). Ånga blir då ett skydd man kan skapa med eld på vatten.
 
+## Bottar och balans
+
+| Bot | Hur den spelar |
+|---|---|
+| `random` | Väljer bland de tillåtna dragen med jämn sannolikhet. En baslinje |
+| `greedy` | Planerar en tur framåt: för varje ruta enheten kan gå till (eller stå kvar) prövas varje anfall och förmåga därifrån, och läget efter turen poängsätts. Vid slump räknas väntevärdet över förhandsvisningens utfall. Planer med exakt samma poäng väljs mellan med botens seed |
+
+Poängen räknar hp för båda lagen, en bonus per levande enhet, vinst och förlust, frysta enheter, avståndet till närmaste fiende utöver den egna räckvidden och att stå på elektrifierad mark. Vikterna är gissningar (`WEIGHTS` i `packages/bots`).
+
+Den giriga botten använder inte isvägg. Värdet av en vägg märks först senare än en tur framåt, så botten kan inte bedöma den. Den kastar inte heller eldklot som inte träffar någon fiende.
+
+`pnpm evt sim` kör bot mot bot. Sidorna byts varje parti, och resultatet visar hur ofta lag 0 vinner, eftersom lag 0 går först vid lika initiativ. CI kör samma sak varje natt (`.github/workflows/balance.yml`).
+
+**Första mätningen** (200 partier på `skirmish`, 2026-10-14):
+
+| Match | Resultat | Rundor |
+|---|---|---|
+| girig mot slump | girig vinner 100 % | 4–7, snitt 4,9 |
+| girig mot girig | 50/50 mellan bottarna, men **lag 0 vinner bara 1 %** | 4–7, snitt 4,9 |
+| slump mot slump | 35 % mot 43 %, 23 % oavgjort | 12–30, snitt 24 |
+
+**Vad mätningen säger:**
+- Partier mellan girig och girig tar slut på 4–7 rundor. Båda sidor går rakt fram och slår till så fort de kan.
+- Att agera **efter** motståndaren är en stor fördel på `skirmish`. Med turordningen c C b B a A går lag 0:s enhet in i räckhåll först, och lag 1:s motsvarande enhet slår till direkt. Det motsäger antagandet i B1 att utplaceringsordningen gynnar den som placeras först. Det är en följd av kartan och turordningen tillsammans och bör ses över (se öppna frågor).
+
 ## Platshållarvärden
 
 | Värde | Nu | Kommentar |
@@ -254,7 +279,7 @@ Hur en tur spelas i webbklienten. Det är också preliminärt.
 
 | Fråga | Påverkar | När |
 |---|---|---|
-| Hur bryts lika initiativ rättvist? Varannan per lag? | B1 | När vi har bot-mot-bot-statistik |
+| Hur bryts lika initiativ rättvist? Varannan per lag, eller växlande mellan rundor? Lag 1 vinner 99 % mellan giriga bottar på `skirmish` | B1 | Efter steg 7 |
 | Får en handling avbryta förflyttningen, som "gå två, anfall, gå två"? | B2 | Om B2 känns stelt i speltest |
 | Ska närstrid kräva liten höjdskillnad, och ska räckvidd växa med höjd? | B6 | Efter speltest |
 | Ska enheter blockera siktlinje? | B7 | Efter speltest |
@@ -272,3 +297,4 @@ Hur en tur spelas i webbklienten. Det är också preliminärt.
 | 2026-10-14 | B6 grundanfall med höjdbonus, B7 siktlinje. B3 har terrängkostnad i stället för fast stegkostnad |
 | 2026-10-14 | B8 rundgräns (30, sedan oavgjort). Döda enheter lämnar turordningen direkt. `stats:` i textformatet och kartan `skirmish` |
 | 2026-10-14 | B9 förmågor, B10 ytor och reaktioner, B11 frysning, B12 undvika i ånga. Förhandsvisningen visar alla utfall med sannolikhet. Regelversion v1 |
+| 2026-10-14 | Girig bot, `evt sim` och nattliga balanskörningar. Första mätningen visar en stor fördel för den som agerar efter motståndaren |

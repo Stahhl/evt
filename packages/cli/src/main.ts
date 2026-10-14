@@ -14,7 +14,7 @@ import {
   RULES_VERSION,
   verifyReplay,
 } from "@evt/engine";
-import { createPlayer, Quit } from "./players.ts";
+import { createPlayer, PLAYER_NAMES, Quit } from "./players.ts";
 import {
   describeEvent,
   describeResult,
@@ -23,6 +23,7 @@ import {
   renderStatus,
   renderUnits,
 } from "./render.ts";
+import { formatSim, simulate } from "./sim.ts";
 
 const USAGE = `Usage: evt <command> [options]
 
@@ -31,14 +32,19 @@ Commands:
   maps                    List the built-in maps
   play [options]          Play a match in the terminal
       --map <name|file>   Built-in map or scenario file (default: skirmish)
-      --p1 <player>       human or bot:random (default: human)
-      --p2 <player>       human or bot:random (default: bot:random)
+      --p1 <player>       human, bot:random or bot:greedy (default: human)
+      --p2 <player>       human, bot:random or bot:greedy (default: bot:greedy)
       --seed <n>          Match seed (default: random)
       --max-rounds <n>    Draw after this round
       --out <file>        Save the replay as JSON
       --watch             Print the board every turn, also for bot vs bot
   replay <file>           Verify a replay against this engine
       --watch             Print every event and the final board
+  sim [options]           Play bots against each other and report win rates
+      --p1, --p2 <bot>    bot:random or bot:greedy (default: greedy vs random)
+      -n <games>          Number of games (default: 100); sides swap every game
+      --map, --seed, --max-rounds as for play
+      --json              Print the result as JSON
 `;
 
 const { positionals, values } = parseArgs({
@@ -46,7 +52,9 @@ const { positionals, values } = parseArgs({
   options: {
     map: { type: "string", default: "skirmish" },
     p1: { type: "string", default: "human" },
-    p2: { type: "string", default: "bot:random" },
+    p2: { type: "string" },
+    n: { type: "string", short: "n" },
+    json: { type: "boolean", default: false },
     seed: { type: "string" },
     "max-rounds": { type: "string" },
     out: { type: "string" },
@@ -83,7 +91,10 @@ async function play(): Promise<void> {
     ...(maxRounds === undefined ? {} : { maxRounds }),
   };
   // Each side gets its own bot seed, so bot vs bot is not a mirror match.
-  const players = [createPlayer(values.p1, seed), createPlayer(values.p2, seed + 1)];
+  const players = [
+    createPlayer(values.p1, seed),
+    createPlayer(values.p2 ?? "bot:greedy", seed + 1),
+  ];
   const anyHuman = players.some((p) => p.human);
   const verbose = values.watch || anyHuman;
 
@@ -143,6 +154,34 @@ function replay(file: string | undefined): void {
   );
 }
 
+function sim(): void {
+  const maxRounds = integer(values["max-rounds"], "max-rounds");
+  const options = {
+    setup: {
+      ...parseScenario(loadScenario(values.map)),
+      ...(maxRounds === undefined ? {} : { maxRounds }),
+    },
+    p1: values.p1 === "human" ? "bot:greedy" : values.p1,
+    p2: values.p2 ?? "bot:random",
+    games: integer(values.n, "n") ?? 100,
+    seed: integer(values.seed, "seed") ?? 1,
+  };
+  for (const p of [options.p1, options.p2]) {
+    if (!PLAYER_NAMES.includes(p) || p === "human") fail(`sim needs bots, got "${p}"`);
+  }
+  const progress = !values.json && process.stderr.isTTY;
+  const result = simulate(options, (done) => {
+    if (progress) process.stderr.write(`\r${done}/${options.games}`);
+  });
+  if (progress) process.stderr.write("\r");
+  if (values.json) {
+    const { setup: _, ...rest } = options;
+    console.log(JSON.stringify({ ...rest, map: values.map, ...result }));
+  } else {
+    console.log(formatSim(options, result));
+  }
+}
+
 switch (command) {
   case "version":
     console.log(`rules ${RULES_VERSION}`);
@@ -155,6 +194,9 @@ switch (command) {
     break;
   case "replay":
     replay(arg);
+    break;
+  case "sim":
+    sim();
     break;
   case undefined:
     console.log(USAGE);

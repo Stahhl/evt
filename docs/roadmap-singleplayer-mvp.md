@@ -90,7 +90,7 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Att besluta:** den exakta reaktionsmatrisen och siffrorna för MVP:n. Börja med en liten tabell (3 element × 5 rutstatusar) och utöka senare.
 
-### 6. Girig bot och balans (S)
+### 6. Girig bot och balans (S) – klart
 
 **Mål:** en motståndare som är värd att spela mot.
 

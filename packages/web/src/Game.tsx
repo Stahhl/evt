@@ -1,4 +1,4 @@
-import { randomBot } from "@evt/bots";
+import { greedyBot } from "@evt/bots";
 import {
   ABILITIES,
   type AbilityId,
@@ -40,7 +40,7 @@ export function Game({ seed, onRestart }: { seed: number; onRestart: () => void 
     if (!container) return;
     const h = new LocalHost({
       setup: { ...parseScenario(MAPS.skirmish as string), seed },
-      bots: { 1: randomBot(seed + 1) },
+      bots: { 1: greedyBot(seed + 1) },
     });
     const b = new BoardView(container, h.state, {
       onHover: setHover,
