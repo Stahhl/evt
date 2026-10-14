@@ -2,6 +2,7 @@
 
 Turn-based elemental tactics on a voxel grid. Rules engine first, frontends second.
 See [docs/tech-stack.md](docs/tech-stack.md) for the technology choices and why,
+[docs/gameplay.md](docs/gameplay.md) for the game rules decided so far,
 and [docs/roadmap-singleplayer-mvp.md](docs/roadmap-singleplayer-mvp.md) for the path to a playable singleplayer MVP.
 
 ## Getting started

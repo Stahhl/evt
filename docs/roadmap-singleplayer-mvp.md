@@ -31,7 +31,7 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Mål:** motorns datatyper finns och ett parti kan startas och avslutas.
 
-- Typer för `Map` (ruta: höjd, terräng, objekt), `Unit` (id, lag, hp, förflyttning, hopphöjd, element, förmågor), `MatchState` (karta, enheter, runda, tur, rng), `Action` och `Event`.
+- Typer för `Map` (ruta: höjd, terräng, objekt), `Unit` (id, lag, hp, förflyttning, hopphöjd, initiativ; element och förmågor kommer i steg 5), `MatchState` (karta, enheter, runda, tur, rng), `Action` och `Event`.
 - `createMatch({ map, teams, seed })`, `apply(state, action) → { state, events }`, `legalActions(state, player)`.
 - Turordning och första handlingar: `move`, `endTurn`. Vinst när ett lag saknar levande enheter.
 - ASCII-parser för kartor och enhetsplacering, så att scenariotester går att skriva direkt.
@@ -39,7 +39,7 @@ Monorepo, CI, seedad PRNG, kanonisk hash, renhetstest för motorn.
 
 **Klart när:** ett scenariotest flyttar en enhet över en ASCII-karta och turen går över till nästa spelare.
 
-**Att besluta:** turordning per lag (alla enheter i laget, sedan motståndaren) eller per enhet efter initiativ (designens turordningslist tyder på det senare). Hur många handlingar en enhet har per tur (t.ex. förflyttning + en handling).
+**Beslutat:** turordning per enhet efter initiativ, och en förflyttning plus en handling per tur. Se [gameplay.md](gameplay.md) (B1, B2).
 
 ### 2. Förflyttning, siktlinje och strid (M)
 
