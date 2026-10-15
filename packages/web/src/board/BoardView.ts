@@ -434,6 +434,11 @@ export class BoardView {
   }
 
   /** Turns the view a quarter turn: 1 clockwise, -1 counter-clockwise. */
+  /** Quarter turns from the start view, counted without wrapping so the UI can animate. */
+  get turns(): number {
+    return Math.round(this.#targetAngle / (Math.PI / 2));
+  }
+
   rotate(direction: 1 | -1): void {
     const from = this.#angle;
     this.#targetAngle += (direction * Math.PI) / 2;
