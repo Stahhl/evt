@@ -10,6 +10,7 @@ import {
   type Unit,
 } from "@evt/engine";
 import { TEAM_COLOR } from "./board/BoardView.ts";
+import { ARCHETYPE_NAME, archetypeOf } from "./game/archetype.ts";
 import { resultText } from "./game/describe.ts";
 
 interface HudProps {
@@ -181,7 +182,8 @@ export function Hud(props: HudProps) {
             <span className="chip" style={{ background: teamColor(selected.team) }}>
               {selected.id}
             </span>{" "}
-            {localTeams.includes(selected.team) ? "Ally" : "Enemy"}
+            {ARCHETYPE_NAME[archetypeOf(selected)]} ·{" "}
+            {localTeams.includes(selected.team) ? "ally" : "enemy"}
             {selected.statuses.some((s) => s.kind === "frozen") && " · frozen"}
           </h2>
           <HpBar unit={selected} />

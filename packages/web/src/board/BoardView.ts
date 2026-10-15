@@ -10,8 +10,10 @@ import {
   type Pos,
   type SurfaceKind,
   type Tile,
+  type Unit,
 } from "@evt/engine";
 import * as THREE from "three";
+import { type Archetype, archetypeOf } from "../game/archetype.ts";
 
 /** World units per height level. Tiles are 1×1. */
 const BLOCK = 0.5;
@@ -44,6 +46,8 @@ const ELEMENT_COLOR: Record<Element, number> = {
 };
 
 const FROZEN_COLOR = new THREE.Color(0xbfefff);
+const HEAD_COLOR = 0xf0d0b0;
+const STEEL_COLOR = 0x9aa3ad;
 
 export interface BoardCallbacks {
   onHover(pos: Pos | null): void;
@@ -52,7 +56,10 @@ export interface BoardCallbacks {
 
 interface UnitView {
   readonly group: THREE.Group;
-  readonly body: THREE.Mesh<THREE.BoxGeometry, THREE.MeshLambertMaterial>;
+  /** Team-coloured; frozen tint and hit flashes are drawn on it. */
+  readonly body: THREE.Mesh<THREE.BufferGeometry, THREE.MeshLambertMaterial>;
+  /** Every mesh of the figure, for picking. */
+  readonly parts: readonly THREE.Mesh[];
 }
 
 type Tween = (now: number) => boolean;
@@ -96,7 +103,7 @@ export class BoardView {
     this.#scene.add(sun);
 
     this.#buildTerrain(state);
-    for (const u of state.units) this.#buildUnit(u.id, u.team);
+    for (const u of state.units) this.#buildUnit(u);
     this.sync(state);
 
     const canvas = this.#renderer.domElement;
@@ -128,7 +135,7 @@ export class BoardView {
       view.group.visible = u.hp > 0;
       view.group.scale.setScalar(1);
       view.group.position.copy(this.#unitPosition(u));
-      view.body.userData.pos = { x: u.x, y: u.y };
+      for (const part of view.parts) part.userData.pos = { x: u.x, y: u.y };
       view.body.material.emissive.setHex(0);
       const color = new THREE.Color(TEAM_COLOR[u.team % TEAM_COLOR.length] ?? "#fff");
       if (u.statuses.some((st) => st.kind === "frozen")) color.lerp(FROZEN_COLOR, 0.65);
@@ -303,18 +310,21 @@ export class BoardView {
     this.#surfaces.set(k, { kind, mesh });
   }
 
-  #buildUnit(id: string, team: number): void {
+  /**
+   * A figure in the team colour whose shape and accent colour tell which kind
+   * of character it is. Its front is local +z.
+   */
+  #buildUnit(unit: Unit): void {
     const group = new THREE.Group();
-    const body = new THREE.Mesh(
-      new THREE.BoxGeometry(0.56, UNIT_HEIGHT, 0.56),
-      new THREE.MeshLambertMaterial({ color: TEAM_COLOR[team % TEAM_COLOR.length] ?? "#fff" }),
-    );
-    body.position.y = UNIT_HEIGHT / 2;
-    group.add(body);
-    group.add(this.#label(id));
+    const kind = archetypeOf(unit);
+    const { body, parts } = figure(kind, TEAM_COLOR[unit.team % TEAM_COLOR.length] ?? "#fff");
+    for (const part of parts) group.add(part);
+    group.add(this.#label(unit.id));
+    // Face the other side of the board: team 0 starts at the low x/y corner.
+    group.rotation.y = unit.team === 0 ? Math.PI / 4 : (-3 * Math.PI) / 4;
     this.#scene.add(group);
-    this.#pickables.push(body);
-    this.#units.set(id, { group, body });
+    this.#pickables.push(...parts);
+    this.#units.set(unit.id, { group, body, parts });
   }
 
   #label(text: string): THREE.Sprite {
@@ -452,6 +462,9 @@ export class BoardView {
     for (const pos of path) {
       const from = view.group.position.clone();
       const to = this.#unitPosition(pos);
+      if (to.x !== from.x || to.z !== from.z) {
+        view.group.rotation.y = Math.atan2(to.x - from.x, to.z - from.z);
+      }
       await this.#tween(130, (t) => {
         view.group.position.lerpVectors(from, to, t);
         view.group.position.y += Math.sin(t * Math.PI) * 0.18;
@@ -465,6 +478,7 @@ export class BoardView {
     if (!attacker || !target) return;
     const home = attacker.group.position.clone();
     const toward = target.group.position.clone().sub(home).setY(0).normalize().multiplyScalar(0.3);
+    attacker.group.rotation.y = Math.atan2(toward.x, toward.z);
     await this.#tween(140, (t) => attacker.group.position.copy(home).addScaledVector(toward, t));
     await this.#tween(220, (t) => {
       attacker.group.position.copy(home).addScaledVector(toward, 1 - t);
@@ -476,6 +490,8 @@ export class BoardView {
   async #animateCast(casterId: string, target: Pos, element: Element): Promise<void> {
     const caster = this.#units.get(casterId);
     if (!caster) return;
+    const aim = this.#world(target, 0).sub(caster.group.position);
+    if (aim.x || aim.z) caster.group.rotation.y = Math.atan2(aim.x, aim.z);
     const from = caster.group.position.clone().setY(caster.group.position.y + UNIT_HEIGHT);
     const to = this.#world(target, this.#top(target) + 0.4);
     const ball = new THREE.Mesh(
@@ -505,5 +521,78 @@ export class BoardView {
     if (!view) return;
     await this.#tween(350, (t) => view.group.scale.setScalar(1 - t));
     view.group.visible = false;
+  }
+}
+
+const lambert = (color: THREE.ColorRepresentation) => new THREE.MeshLambertMaterial({ color });
+
+function mesh(
+  geometry: THREE.BufferGeometry,
+  color: THREE.ColorRepresentation,
+  x: number,
+  y: number,
+  z: number,
+): THREE.Mesh<THREE.BufferGeometry, THREE.MeshLambertMaterial> {
+  const m = new THREE.Mesh(geometry, lambert(color));
+  m.position.set(x, y, z);
+  return m;
+}
+
+/**
+ * Low-poly figures, all about UNIT_HEIGHT tall: a body in the team colour, a
+ * head, and an accent in the element colour (steel for the warden).
+ */
+function figure(
+  kind: Archetype,
+  teamColor: THREE.ColorRepresentation,
+): { body: THREE.Mesh<THREE.BufferGeometry, THREE.MeshLambertMaterial>; parts: THREE.Mesh[] } {
+  switch (kind) {
+    case "knight": {
+      // Stocky, with a crested helmet and a blade at the side.
+      const body = mesh(new THREE.BoxGeometry(0.52, 0.52, 0.4), teamColor, 0, 0.26, 0);
+      const head = mesh(new THREE.SphereGeometry(0.14, 14, 10), HEAD_COLOR, 0, 0.64, 0);
+      const crest = mesh(new THREE.ConeGeometry(0.09, 0.22, 8), ELEMENT_COLOR.fire, 0, 0.86, 0);
+      const blade = mesh(
+        new THREE.BoxGeometry(0.06, 0.56, 0.1),
+        ELEMENT_COLOR.fire,
+        0.33,
+        0.4,
+        0.08,
+      );
+      return { body, parts: [body, head, crest, blade] };
+    }
+    case "archer": {
+      // Slim and tall, with a bow at the side.
+      const body = mesh(new THREE.CylinderGeometry(0.15, 0.19, 0.6, 12), teamColor, 0, 0.3, 0);
+      const head = mesh(new THREE.SphereGeometry(0.13, 14, 10), HEAD_COLOR, 0, 0.72, 0);
+      const bow = mesh(
+        new THREE.TorusGeometry(0.28, 0.04, 6, 16, Math.PI),
+        ELEMENT_COLOR.ice,
+        0.22,
+        0.42,
+        0,
+      );
+      // The half ring bulges outward, flat to the front and back.
+      bow.rotation.z = -Math.PI / 2;
+      const string = mesh(new THREE.BoxGeometry(0.015, 0.56, 0.015), 0xffffff, 0.22, 0.42, 0);
+      return { body, parts: [body, head, bow, string] };
+    }
+    case "scout": {
+      // Small and light, a spark floating over the head.
+      const body = mesh(new THREE.CylinderGeometry(0.1, 0.24, 0.44, 10), teamColor, 0, 0.22, 0);
+      const head = mesh(new THREE.SphereGeometry(0.12, 14, 10), HEAD_COLOR, 0, 0.54, 0);
+      const spark = mesh(new THREE.OctahedronGeometry(0.12), ELEMENT_COLOR.lightning, 0, 0.8, 0);
+      spark.scale.y = 1.5;
+      return { body, parts: [body, head, spark] };
+    }
+    case "warden": {
+      // Broad and heavy, a steel helmet and a big shield in front.
+      const body = mesh(new THREE.BoxGeometry(0.62, 0.6, 0.46), teamColor, 0, 0.3, 0);
+      const head = mesh(new THREE.SphereGeometry(0.15, 14, 10), HEAD_COLOR, 0, 0.74, 0);
+      const helmet = mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.12, 12), STEEL_COLOR, 0, 0.8, 0);
+      const shield = mesh(new THREE.BoxGeometry(0.56, 0.6, 0.06), STEEL_COLOR, 0, 0.34, 0.28);
+      const boss = mesh(new THREE.SphereGeometry(0.08, 10, 8), teamColor, 0, 0.36, 0.32);
+      return { body, parts: [body, head, helmet, shield, boss] };
+    }
   }
 }
