@@ -454,3 +454,84 @@ button.aim.lightning {
     display: none;
   }
 }
+
+/* Big rotate buttons with a compass that shows where each side starts. */
+.rotate-controls {
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 999px;
+}
+
+button.rotate {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 1;
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+button.rotate:active {
+  background: rgba(255, 210, 63, 0.22);
+  border-color: var(--accent);
+}
+
+.compass {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+}
+
+/* Square board turned 45° so a corner points down, like the start view. */
+.compass-board {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  transition: transform 300ms ease-in-out;
+}
+
+.compass-board::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  transform: rotate(45deg);
+  border: 2px solid var(--muted);
+  border-radius: 3px;
+}
+
+.compass-dot {
+  position: absolute;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--bg);
+}
+
+.compass-dot.own {
+  bottom: 0;
+}
+
+.compass-dot.enemy {
+  top: 0;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .rotate-controls {
+    left: auto;
+    right: 8px;
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
+  }
+}

@@ -21,6 +21,7 @@ import { NO_OPTIONS, posKey, turnOptions } from "./game/options.ts";
 import { Hud } from "./Hud.tsx";
 import type { HostUpdate } from "./host/GameHost.ts";
 import { LocalHost } from "./host/LocalHost.ts";
+import { RotateControls } from "./RotateControls.tsx";
 
 /** How far the board zooms in while aiming on a touch screen. */
 const AIM_ZOOM = 1.8;
@@ -62,6 +63,8 @@ export function Game({ seed, map, onNewGame }: GameProps) {
   const [aim, setAim] = useState<Aim | null>(null);
   const [aimTile, setAimTile] = useState<Pos | null>(null);
   const [showThreat, setShowThreat] = useState(false);
+  /** Quarter turns of the camera, for the compass. */
+  const [turns, setTurns] = useState(0);
   const [log, setLog] = useState<string[]>([]);
   const clickRef = useRef<(pos: Pos, button: MouseButton) => void>(() => {});
 
@@ -208,12 +211,18 @@ export function Game({ seed, map, onNewGame }: GameProps) {
     setPending(null);
   };
 
+  const rotate = (direction: 1 | -1) => {
+    if (!board) return;
+    board.rotate(direction);
+    setTurns(board.turns);
+  };
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") cancel();
       if (e.key === "Enter" && pending && myTurn) submit(pending);
-      if (e.key === "ArrowLeft") board?.rotate(-1);
-      if (e.key === "ArrowRight") board?.rotate(1);
+      if (e.key === "ArrowLeft") rotate(-1);
+      if (e.key === "ArrowRight") rotate(1);
       if (e.key === "t" || e.key === "T") setShowThreat((v) => !v);
       const index = Number(e.key) - 1;
       const ability = active?.abilities[index];
@@ -318,22 +327,6 @@ export function Game({ seed, map, onNewGame }: GameProps) {
         </button>
         <button
           type="button"
-          className="secondary"
-          title="Rotate left (←)"
-          onClick={() => board?.rotate(-1)}
-        >
-          ⟲
-        </button>
-        <button
-          type="button"
-          className="secondary"
-          title="Rotate right (→)"
-          onClick={() => board?.rotate(1)}
-        >
-          ⟳
-        </button>
-        <button
-          type="button"
           className={`secondary ${showThreat ? "on" : ""}`}
           title="Tiles the enemy can hit next turn (T)"
           onClick={() => setShowThreat((v) => !v)}
@@ -351,6 +344,7 @@ export function Game({ seed, map, onNewGame }: GameProps) {
       </nav>
       <div className="board" ref={containerRef} />
       {touch && aim && myTurn && <div className="reticle" />}
+      {board && <RotateControls turns={turns} team={host?.localTeams[0] ?? 0} onRotate={rotate} />}
       {view && host && (
         <Hud
           state={view}

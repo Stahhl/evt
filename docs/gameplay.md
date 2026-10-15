@@ -272,7 +272,7 @@ Hur en tur spelas i webbklienten. Det är också preliminärt.
 - Röda rutor visar fiender som kan anfallas. **Ett anfall kräver bekräftelse**: klicket öppnar en förhandsvisning (hp före och efter, och vem som dör), och först "Confirm" utför anfallet. Esc avbryter.
 - Förmågor väljs med knapparna eller sifferknapparna `1`, `2` och så vidare. Möjliga mål blir lila, och det område förmågan skulle träffa blir gult när man håller muspekaren över ett mål. Klicket öppnar en förhandsvisning, precis som för anfall.
 - `E` eller knappen "End turn" avslutar turen.
-- Piltangenterna vänster och höger, eller knapparna ⟲ ⟳, vrider kameran ett kvarts varv. Så kommer man åt rutor som skyms.
+- Piltangenterna vänster och höger, eller de stora knapparna ⟲ ⟳ vid brädets kant, vrider kameran ett kvarts varv. Så kommer man åt rutor som skyms. Mellan knapparna sitter en kompass: brädet sett från kameran med en prick i varje lags färg i lagets starthörn, så att man ser åt vilket håll man tittar. Knapparna sitter nere till vänster på breda skärmar och mitt på högerkanten på mobil.
 - `T` eller knappen "Threat" visar **hotvyn**: rutor som någon fiende kan träffa nästa tur, efter att ha gått dit den kan gå. Den räknar med siktlinje från varje ruta fienden kan stå på, men lägger till områdets radie direkt till räckvidden, så den kan överskatta bakom väggar. Hotvyn är ett hjälpmedel och ingen regel (`threatenedTiles` i motorn).
 - Verktygsraden har kartval, nytt parti och "Replay ⤓", som laddar ned partiet som JSON. Filen går att verifiera och spela upp med `pnpm evt replay`.
 - Motståndarens drag spelas upp som animationer i tur och ordning, med en kort paus före varje botdrag.
