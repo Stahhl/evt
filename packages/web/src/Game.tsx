@@ -14,12 +14,29 @@ import {
   threatenedTiles,
 } from "@evt/engine";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BoardView, type Highlight } from "./board/BoardView.ts";
+import { BoardView, type Highlight, type MouseButton } from "./board/BoardView.ts";
+import { type Aim, aimAction, canAim, defaultAim, firstTarget } from "./game/aim.ts";
 import { describeEvent } from "./game/describe.ts";
 import { NO_OPTIONS, posKey, turnOptions } from "./game/options.ts";
 import { Hud } from "./Hud.tsx";
 import type { HostUpdate } from "./host/GameHost.ts";
 import { LocalHost } from "./host/LocalHost.ts";
+
+/** How far the board zooms in while aiming on a touch screen. */
+const AIM_ZOOM = 1.8;
+
+/** Whether the main pointer is a finger rather than a mouse. */
+function useCoarsePointer(): boolean {
+  const query = "(pointer: coarse)";
+  const [coarse, setCoarse] = useState(() => matchMedia(query).matches);
+  useEffect(() => {
+    const list = matchMedia(query);
+    const onChange = () => setCoarse(list.matches);
+    list.addEventListener("change", onChange);
+    return () => list.removeEventListener("change", onChange);
+  }, []);
+  return coarse;
+}
 
 interface GameProps {
   seed: number;
@@ -39,9 +56,14 @@ export function Game({ seed, map, onNewGame }: GameProps) {
   const [pending, setPending] = useState<Action | null>(null);
   /** The ability the player is aiming, if any. */
   const [mode, setMode] = useState<AbilityId | null>(null);
+  /** Touch screens aim by dragging the board under a crosshair instead of tapping tiles. */
+  const touch = useCoarsePointer();
+  /** On touch screens: what the player is about to do, and the tile under the crosshair. */
+  const [aim, setAim] = useState<Aim | null>(null);
+  const [aimTile, setAimTile] = useState<Pos | null>(null);
   const [showThreat, setShowThreat] = useState(false);
   const [log, setLog] = useState<string[]>([]);
-  const clickRef = useRef<(pos: Pos) => void>(() => {});
+  const clickRef = useRef<(pos: Pos, button: MouseButton) => void>(() => {});
 
   useEffect(() => {
     const container = containerRef.current;
@@ -52,7 +74,8 @@ export function Game({ seed, map, onNewGame }: GameProps) {
     });
     const b = new BoardView(container, h.state, {
       onHover: setHover,
-      onClick: (pos) => clickRef.current(pos),
+      onClick: (pos, button) => clickRef.current(pos, button),
+      onAim: setAimTile,
     });
     setHost(h);
     setBoard(b);
@@ -105,12 +128,47 @@ export function Game({ seed, map, onNewGame }: GameProps) {
     () => (myTurn && view && host ? turnOptions(view, host.localTeams) : NO_OPTIONS),
     [myTurn, view, host],
   );
-  const outcome = useMemo(
-    () => (pending && view && myTurn ? preview(view, pending) : null),
-    [pending, view, myTurn],
-  );
 
   const ready = myTurn && view && active ? readyAbilities(view, active) : [];
+  const localActive = !!host && !!active && host.localTeams.includes(active.team);
+
+  // Touch: keep aiming at something the active unit can still do. The aim
+  // survives the unit's own animations so the view doesn't jump out and back.
+  useEffect(() => {
+    if (!touch || !localActive) return setAim(null);
+    if (!myTurn) return;
+    setAim((old) => (old && canAim(options, old) ? old : defaultAim(options)));
+  }, [touch, localActive, myTurn, options]);
+
+  // Touch: zoom in on the first target when aiming starts, out when it stops.
+  useEffect(() => {
+    if (!board || !touch) return;
+    if (aim && myTurn && active) {
+      const target = firstTarget(options, aim, active);
+      board.setPanMode(true);
+      void board.focusOn(target, AIM_ZOOM);
+      setAimTile(target);
+    } else if (!aim) {
+      board.setPanMode(false);
+      void board.focusOn(null);
+      setAimTile(null);
+    }
+  }, [board, touch, aim, myTurn, active, options]);
+
+  /** Touch: the action the confirm button would submit. */
+  const aimed = useMemo(
+    () =>
+      touch && myTurn && aim && aimTile && active
+        ? aimAction(options, aim, active.id, aimTile)
+        : null,
+    [touch, myTurn, aim, aimTile, active, options],
+  );
+  /** The attack or ability whose outcome is previewed. */
+  const shown = touch ? (aimed?.type === "move" ? null : aimed) : pending;
+  const outcome = useMemo(
+    () => (shown && view && myTurn ? preview(view, shown) : null),
+    [shown, view, myTurn],
+  );
   const cancel = () => {
     setPending(null);
     setMode(null);
@@ -126,18 +184,26 @@ export function Game({ seed, map, onNewGame }: GameProps) {
     }
   };
 
-  clickRef.current = (pos) => {
+  // Mouse: left click moves (or aims an ability), right click attacks. On
+  // touch screens a tap only selects; aiming is done by dragging the board.
+  clickRef.current = (pos, button) => {
     const k = posKey(pos);
     const unit = view?.units.find((u) => u.hp > 0 && u.x === pos.x && u.y === pos.y);
     if (unit) setSelected(unit.id);
-    if (!myTurn) return;
+    if (!myTurn || touch) return;
+    if (button === "secondary") {
+      setMode(null);
+      const attack = options.attacks.get(k);
+      if (!attack) return setPending(null);
+      // A second right click on the same target confirms.
+      if (pending?.type === "attack" && posKey(pending.target) === k) return submit(attack);
+      return setPending(attack);
+    }
     if (mode) {
       const cast = options.abilities.get(mode)?.get(k);
       if (cast) return setPending(cast);
       return cancel();
     }
-    const attack = options.attacks.get(k);
-    if (attack) return setPending(attack);
     if (options.moves.has(k) && active) return submit({ type: "move", unit: active.id, to: pos });
     setPending(null);
   };
@@ -145,6 +211,7 @@ export function Game({ seed, map, onNewGame }: GameProps) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") cancel();
+      if (e.key === "Enter" && pending && myTurn) submit(pending);
       if (e.key === "ArrowLeft") board?.rotate(-1);
       if (e.key === "ArrowRight") board?.rotate(1);
       if (e.key === "t" || e.key === "T") setShowThreat((v) => !v);
@@ -174,29 +241,51 @@ export function Game({ seed, map, onNewGame }: GameProps) {
         );
       }
     }
-    const aimed = pending?.type === "ability" ? pending : null;
-    const aiming = aimed?.ability ?? mode;
+    const cast = shown?.type === "ability" ? shown : null;
+    const aiming =
+      cast?.ability ?? (touch ? (aim !== "move" && aim !== "attack" ? aim : null) : mode);
+    // The tile the player points at: under the crosshair, or under the mouse.
+    const pointed = touch ? aimTile : hover;
     if (aiming) {
       // Show where the ability can go, and the area it would hit.
       for (const k of options.abilities.get(aiming)?.keys() ?? []) highlights.set(k, "ability");
       const center =
-        aimed?.target ??
-        (hover && options.abilities.get(aiming)?.has(posKey(hover)) ? hover : null);
+        cast?.target ??
+        (pointed && options.abilities.get(aiming)?.has(posKey(pointed)) ? pointed : null);
       if (center) {
         for (const p of area(view.map, center, ABILITIES[aiming].radius)) {
           highlights.set(posKey(p), "target");
         }
       }
     } else {
-      for (const k of options.moves.keys()) highlights.set(k, "move");
-      const hoverPath = hover ? options.moves.get(posKey(hover)) : undefined;
-      for (const p of hoverPath ?? []) highlights.set(posKey(p), "path");
-      for (const k of options.attacks.keys()) highlights.set(k, "attack");
-      if (pending?.type === "attack") highlights.set(posKey(pending.target), "target");
+      if (!touch || aim === "move") {
+        for (const k of options.moves.keys()) highlights.set(k, "move");
+        const path = pointed ? options.moves.get(posKey(pointed)) : undefined;
+        for (const p of path ?? []) highlights.set(posKey(p), "path");
+        if (touch && path) highlights.set(posKey(pointed as Pos), "target");
+      }
+      if (!touch || aim === "attack") {
+        for (const k of options.attacks.keys()) highlights.set(k, "attack");
+      }
+      if (shown?.type === "attack") highlights.set(posKey(shown.target), "target");
     }
     if (active && myTurn) highlights.set(posKey(active), "active");
     board.setHighlights(highlights);
-  }, [board, view, host, options, hover, pending, mode, active, myTurn, showThreat]);
+  }, [
+    board,
+    view,
+    host,
+    options,
+    hover,
+    shown,
+    mode,
+    active,
+    myTurn,
+    showThreat,
+    touch,
+    aim,
+    aimTile,
+  ]);
 
   const downloadReplay = () => {
     if (!host) return;
@@ -261,6 +350,7 @@ export function Game({ seed, map, onNewGame }: GameProps) {
         </button>
       </nav>
       <div className="board" ref={containerRef} />
+      {touch && aim && myTurn && <div className="reticle" />}
       {view && host && (
         <Hud
           state={view}
@@ -274,10 +364,17 @@ export function Game({ seed, map, onNewGame }: GameProps) {
             setPending(null);
             setMode(a);
           }}
-          pending={pending}
+          pending={shown}
           outcome={outcome}
           log={log}
-          onConfirm={() => pending && submit(pending)}
+          touch={touch}
+          aim={aim}
+          aimed={aimed}
+          onAim={setAim}
+          onConfirm={() => {
+            const action = touch ? aimed : pending;
+            if (action) submit(action);
+          }}
           onCancel={cancel}
           onEndTurn={() => active && submit({ type: "endTurn", unit: active.id })}
           onRestart={() => onNewGame(map)}

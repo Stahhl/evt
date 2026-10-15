@@ -10,6 +10,7 @@ import {
   type Unit,
 } from "@evt/engine";
 import { TEAM_COLOR } from "./board/BoardView.ts";
+import type { Aim } from "./game/aim.ts";
 import { ARCHETYPE_NAME, archetypeOf } from "./game/archetype.ts";
 import { resultText } from "./game/describe.ts";
 
@@ -25,6 +26,12 @@ interface HudProps {
   pending: Action | null;
   outcome: Outcome | null;
   log: readonly string[];
+  /** Touch screens get an action bar and aim with a crosshair. */
+  touch: boolean;
+  aim: Aim | null;
+  /** The action under the crosshair, if it is a valid target. */
+  aimed: Action | null;
+  onAim(aim: Aim): void;
   onMode(ability: AbilityId | null): void;
   onConfirm(): void;
   onCancel(): void;
@@ -135,14 +142,16 @@ export function Hud(props: HudProps) {
           {state.result
             ? ""
             : myTurn
-              ? props.mode
-                ? `${ABILITIES[props.mode].name}: pick a highlighted tile. Esc cancels.`
-                : "Blue tiles: move. Red: attack. Or pick an ability. E ends the turn, ←/→ rotate."
+              ? props.touch
+                ? "Drag the board to aim."
+                : props.mode
+                  ? `${ABILITIES[props.mode].name}: pick a highlighted tile. Esc cancels.`
+                  : "Left click: move. Right click: attack. 1–3: abilities. E ends the turn, ←/→ rotate."
               : activeUnit && localTeams.includes(activeUnit.team)
                 ? "…"
                 : "Opponent's turn"}
         </p>
-        {myTurn && activeUnit && activeUnit.abilities.length > 0 && (
+        {!props.touch && myTurn && activeUnit && activeUnit.abilities.length > 0 && (
           <div className="abilities">
             {activeUnit.abilities.map((a, i) => {
               const def = ABILITIES[a];
@@ -164,9 +173,11 @@ export function Hud(props: HudProps) {
             })}
           </div>
         )}
-        <button type="button" className="end-turn" disabled={!myTurn} onClick={props.onEndTurn}>
-          End turn (E)
-        </button>
+        {!props.touch && (
+          <button type="button" className="end-turn" disabled={!myTurn} onClick={props.onEndTurn}>
+            End turn (E)
+          </button>
+        )}
         {props.hover && hoverTile && (
           <p className="tile-info">
             ({props.hover.x}, {props.hover.y}) · {hoverTile.terrain} · height {hoverTile.height}
@@ -212,7 +223,9 @@ export function Hud(props: HudProps) {
         </section>
       )}
 
-      {props.pending && outcome && (
+      {props.touch && myTurn && activeUnit && <ActionBar {...props} unit={activeUnit} />}
+
+      {!props.touch && props.pending && outcome && (
         <section className="panel preview">
           <h2>
             {props.pending.type === "ability" ? ABILITIES[props.pending.ability].name : "Attack"}{" "}
@@ -256,5 +269,66 @@ export function Hud(props: HudProps) {
         </div>
       )}
     </>
+  );
+}
+
+const AIM_NAME: Record<"move" | "attack", string> = { move: "Move", attack: "Attack" };
+const CONFIRM_NAME: Record<"move" | "attack", string> = { move: "Move here", attack: "Attack" };
+
+/** Touch screens: pick move, attack or an ability, aim with the crosshair, confirm. */
+function ActionBar(props: HudProps & { unit: Unit }) {
+  const { unit, aim, aimed, outcome, state } = props;
+  const turn = state.turn;
+  const choices: { aim: Aim; label: string; enabled: boolean; element?: string }[] = [
+    { aim: "move", label: AIM_NAME.move, enabled: !turn.moved },
+    { aim: "attack", label: AIM_NAME.attack, enabled: !turn.acted },
+    ...unit.abilities.map((a) => ({
+      aim: a,
+      label: ABILITIES[a].name,
+      enabled: props.readyAbilities.includes(a),
+      element: ABILITIES[a].element,
+    })),
+  ];
+  const confirmName = !aim
+    ? ""
+    : aim === "move" || aim === "attack"
+      ? CONFIRM_NAME[aim]
+      : ABILITIES[aim].name;
+  const done = turn.moved && turn.acted;
+  return (
+    <section className="panel action-bar">
+      {aimed && aimed.type !== "move" && outcome && (
+        <div className="action-preview">
+          <OutcomeView state={state} outcome={outcome} />
+        </div>
+      )}
+      <div className="aims">
+        {choices.map((c) => (
+          <button
+            type="button"
+            key={c.aim}
+            className={`aim ${c.element ?? ""} ${aim === c.aim ? "selected" : ""}`}
+            disabled={!c.enabled}
+            onClick={() => props.onAim(c.aim)}
+          >
+            {c.label}
+          </button>
+        ))}
+      </div>
+      <div className="buttons">
+        {aim && (
+          <button type="button" className="confirm" disabled={!aimed} onClick={props.onConfirm}>
+            {confirmName}
+          </button>
+        )}
+        <button
+          type="button"
+          className={`end-turn ${aim && !done ? "secondary" : "confirm"}`}
+          onClick={props.onEndTurn}
+        >
+          End turn
+        </button>
+      </div>
+    </section>
   );
 }

@@ -49,9 +49,13 @@ const FROZEN_COLOR = new THREE.Color(0xbfefff);
 const HEAD_COLOR = 0xf0d0b0;
 const STEEL_COLOR = 0x9aa3ad;
 
+export type MouseButton = "primary" | "secondary";
+
 export interface BoardCallbacks {
   onHover(pos: Pos | null): void;
-  onClick(pos: Pos): void;
+  onClick(pos: Pos, button: MouseButton): void;
+  /** In pan mode: the tile under the centre of the screen changed. */
+  onAim?(pos: Pos | null): void;
 }
 
 interface UnitView {
@@ -85,7 +89,15 @@ export class BoardView {
   #angle = 0;
   #targetAngle = 0;
   #rotations = 0;
-  #pointerDown: { x: number; y: number } | null = null;
+  #pointerDown: { x: number; y: number; button: number } | null = null;
+  /** Where the pointer was at the last pan step, while dragging in pan mode. */
+  #panFrom: { x: number; y: number } | null = null;
+  #dragged = false;
+  #panMode = false;
+  /** The point the camera looks at, and how far it is zoomed in. */
+  readonly #focus = new THREE.Vector3();
+  #zoom = 1;
+  #focusMoves = 0;
 
   constructor(container: HTMLElement, state: MatchState, callbacks: BoardCallbacks) {
     this.#container = container;
@@ -111,6 +123,7 @@ export class BoardView {
     canvas.addEventListener("pointerdown", this.#onPointerDown);
     canvas.addEventListener("pointerup", this.#onPointerUp);
     canvas.addEventListener("pointerleave", this.#onPointerLeave);
+    canvas.addEventListener("contextmenu", this.#onContextMenu);
     this.#resize = new ResizeObserver(() => this.#fit());
     this.#resize.observe(container);
     this.#fit();
@@ -191,6 +204,36 @@ export class BoardView {
     const v = this.#world(pos, this.#top(pos)).project(this.#camera);
     const { clientWidth: w, clientHeight: h } = this.#renderer.domElement;
     return { x: ((v.x + 1) / 2) * w, y: ((1 - v.y) / 2) * h };
+  }
+
+  /**
+   * Pan mode is for aiming on touch screens: dragging moves the board under a
+   * fixed crosshair in the middle of the screen, and the tile under it is the
+   * target. Tapping a tile moves it under the crosshair.
+   */
+  setPanMode(on: boolean): void {
+    this.#panMode = on;
+    this.#panFrom = null;
+  }
+
+  /** Centres the view on a tile and zooms in, or with null shows the whole board. */
+  focusOn(pos: Pos | null, zoom = 1): Promise<void> {
+    const fromFocus = this.#focus.clone();
+    const toFocus = pos ? this.#world(pos, this.#top(pos)) : new THREE.Vector3();
+    const fromZoom = this.#zoom;
+    const move = ++this.#focusMoves;
+    return this.#tween(220, (t) => {
+      if (move !== this.#focusMoves) return; // a newer move or a drag took over
+      const eased = t * t * (3 - 2 * t);
+      this.#focus.lerpVectors(fromFocus, toFocus, eased);
+      this.#zoom = fromZoom + (zoom - fromZoom) * eased;
+      this.#placeCamera();
+    });
+  }
+
+  /** The tile in the middle of the screen, if any. */
+  centerTile(): Pos | null {
+    return this.#pickAt(new THREE.Vector2(0, 0));
   }
 
   dispose(): void {
@@ -382,8 +425,12 @@ export class BoardView {
     const a = this.#angle;
     const x = -Math.cos(a) + Math.sin(a);
     const z = -Math.sin(a) - Math.cos(a);
-    this.#camera.position.set(x * size, size * 1.1, z * size);
-    this.#camera.lookAt(0, 0, 0);
+    this.#camera.position.set(x * size, size * 1.1, z * size).add(this.#focus);
+    this.#camera.lookAt(this.#focus);
+    if (this.#camera.zoom !== this.#zoom) {
+      this.#camera.zoom = this.#zoom;
+      this.#camera.updateProjectionMatrix();
+    }
   }
 
   /** Turns the view a quarter turn: 1 clockwise, -1 counter-clockwise. */
@@ -400,12 +447,19 @@ export class BoardView {
     });
   }
 
-  #pick(event: PointerEvent): Pos | null {
+  #ndc(event: { clientX: number; clientY: number }): THREE.Vector2 {
     const rect = this.#renderer.domElement.getBoundingClientRect();
-    const ndc = new THREE.Vector2(
+    return new THREE.Vector2(
       ((event.clientX - rect.left) / rect.width) * 2 - 1,
       -((event.clientY - rect.top) / rect.height) * 2 + 1,
     );
+  }
+
+  #pick(event: PointerEvent): Pos | null {
+    return this.#pickAt(this.#ndc(event));
+  }
+
+  #pickAt(ndc: THREE.Vector2): Pos | null {
     this.#raycaster.setFromCamera(ndc, this.#camera);
     for (const hit of this.#raycaster.intersectObjects(this.#pickables, false)) {
       if (!hit.object.visible || !hit.object.parent?.visible) continue;
@@ -415,7 +469,39 @@ export class BoardView {
     return null;
   }
 
+  /** Where a screen point lands on the flat plane through the focus point. */
+  #ground(point: { clientX: number; clientY: number }): THREE.Vector3 | null {
+    this.#raycaster.setFromCamera(this.#ndc(point), this.#camera);
+    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -this.#focus.y);
+    return this.#raycaster.ray.intersectPlane(plane, new THREE.Vector3());
+  }
+
+  #pan(from: { x: number; y: number }, to: { x: number; y: number }): void {
+    const a = this.#ground({ clientX: from.x, clientY: from.y });
+    const b = this.#ground({ clientX: to.x, clientY: to.y });
+    if (!a || !b) return;
+    const { cols, rows } = this.#state.map;
+    this.#focus.add(a.sub(b));
+    this.#focus.x = THREE.MathUtils.clamp(this.#focus.x, -cols / 2, cols / 2);
+    this.#focus.z = THREE.MathUtils.clamp(this.#focus.z, -rows / 2, rows / 2);
+    this.#placeCamera();
+  }
+
   #onPointerMove = (event: PointerEvent): void => {
+    const down = this.#pointerDown;
+    if (this.#panMode && down && this.#panFrom) {
+      if (!this.#dragged && Math.hypot(event.clientX - down.x, event.clientY - down.y) > 6) {
+        this.#dragged = true;
+        this.#focusMoves++; // stop any running focus move
+      }
+      if (this.#dragged) {
+        const to = { x: event.clientX, y: event.clientY };
+        this.#pan(this.#panFrom, to);
+        this.#panFrom = to;
+        this.#callbacks.onAim?.(this.centerTile());
+        return;
+      }
+    }
     const pos = this.#pick(event);
     const k = pos ? key(pos) : null;
     if (k !== this.#hovered) {
@@ -425,16 +511,37 @@ export class BoardView {
   };
 
   #onPointerDown = (event: PointerEvent): void => {
-    this.#pointerDown = { x: event.clientX, y: event.clientY };
+    this.#pointerDown = { x: event.clientX, y: event.clientY, button: event.button };
+    this.#dragged = false;
+    if (this.#panMode && event.button === 0) {
+      this.#panFrom = { x: event.clientX, y: event.clientY };
+      this.#renderer.domElement.setPointerCapture?.(event.pointerId);
+    }
   };
 
   #onPointerUp = (event: PointerEvent): void => {
     const down = this.#pointerDown;
     this.#pointerDown = null;
-    if (!down || Math.hypot(event.clientX - down.x, event.clientY - down.y) > 6) return;
+    this.#panFrom = null;
+    if (!down) return;
+    if (this.#panMode && this.#dragged) {
+      // Settle on the tile under the crosshair.
+      const pos = this.centerTile();
+      if (pos) void this.focusOn(pos, this.#zoom);
+      this.#callbacks.onAim?.(pos);
+      return;
+    }
+    if (Math.hypot(event.clientX - down.x, event.clientY - down.y) > 6) return;
     const pos = this.#pick(event);
-    if (pos) this.#callbacks.onClick(pos);
+    if (!pos) return;
+    if (this.#panMode && down.button === 0) {
+      void this.focusOn(pos, this.#zoom);
+      this.#callbacks.onAim?.(pos);
+    }
+    this.#callbacks.onClick(pos, down.button === 2 ? "secondary" : "primary");
   };
+
+  #onContextMenu = (event: Event): void => event.preventDefault();
 
   #onPointerLeave = (): void => {
     if (this.#hovered !== null) {
