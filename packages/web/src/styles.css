@@ -331,3 +331,126 @@ button.secondary.on {
     display: none;
   }
 }
+
+/* Touch screens: aim by dragging the board under a crosshair. */
+.board canvas {
+  touch-action: none;
+}
+
+.reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.reticle::before,
+.reticle::after {
+  content: "";
+  position: absolute;
+  background: var(--accent);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+.reticle::before {
+  left: 50%;
+  top: -12px;
+  bottom: -12px;
+  width: 2px;
+  margin-left: -1px;
+  mask: linear-gradient(#000 0 14px, transparent 14px calc(100% - 14px), #000 0);
+}
+
+.reticle::after {
+  top: 50%;
+  left: -12px;
+  right: -12px;
+  height: 2px;
+  margin-top: -1px;
+  mask: linear-gradient(90deg, #000 0 14px, transparent 14px calc(100% - 14px), #000 0);
+}
+
+.action-bar {
+  left: 8px;
+  right: 8px;
+  bottom: max(8px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+}
+
+.action-bar .aims {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+}
+
+.action-bar button {
+  padding: 10px 12px;
+  min-height: 44px;
+}
+
+button.aim {
+  flex: 1 0 auto;
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+button.aim.selected {
+  background: rgba(255, 210, 63, 0.22);
+  border-color: var(--accent);
+}
+
+button.aim.fire {
+  border-bottom: 3px solid #ff7a3d;
+}
+
+button.aim.ice {
+  border-bottom: 3px solid #8fdcff;
+}
+
+button.aim.lightning {
+  border-bottom: 3px solid #ffe34d;
+}
+
+.action-bar .confirm {
+  flex: 1;
+  font-size: 16px;
+}
+
+.action-preview ul {
+  margin: 0;
+}
+
+@media (pointer: coarse) {
+  .toolbar {
+    top: 8px;
+    bottom: auto;
+    right: 8px;
+    left: auto;
+    transform: none;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 55%;
+  }
+  .toolbar label {
+    display: none;
+  }
+  .turn-order {
+    top: 8px;
+    left: 8px;
+  }
+  .log,
+  .unit-card,
+  .turn-order .tile-info {
+    display: none;
+  }
+}
